@@ -18,7 +18,10 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
+!.idea/codeStyles
+!/.idea/codeStyles/naver-intellij-formatter.xml
+
 *.iws
 *.iml
 *.ipr
