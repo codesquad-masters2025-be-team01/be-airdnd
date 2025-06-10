@@ -1,13 +1,13 @@
-package com.dmz.be_airdnd;
+package com.dmz.airdnd;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BeAirdndApplication {
+public class AirdndApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BeAirdndApplication.class, args);
+		SpringApplication.run(AirdndApplication.class, args);
 	}
 
 }
