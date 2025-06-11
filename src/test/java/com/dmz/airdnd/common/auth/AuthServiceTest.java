@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
-import com.dmz.airdnd.user.dto.request.response.UserRequest;
+import com.dmz.airdnd.user.dto.request.UserRequest;
 import com.dmz.airdnd.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)

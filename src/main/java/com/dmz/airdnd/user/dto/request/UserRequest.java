@@ -1,4 +1,4 @@
-package com.dmz.airdnd.user.dto.request.response;
+package com.dmz.airdnd.user.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

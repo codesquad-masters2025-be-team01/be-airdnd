@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dmz.airdnd.user.domain.User;
-import com.dmz.airdnd.user.dto.request.response.UserRequest;
+import com.dmz.airdnd.user.dto.request.UserRequest;
 import com.dmz.airdnd.user.mapper.UserMapper;
 import com.dmz.airdnd.user.repository.UserRepository;
 

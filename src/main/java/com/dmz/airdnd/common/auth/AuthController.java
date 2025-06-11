@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dmz.airdnd.common.dto.ApiResponse;
-import com.dmz.airdnd.user.dto.request.response.UserRequest;
+import com.dmz.airdnd.user.dto.request.UserRequest;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

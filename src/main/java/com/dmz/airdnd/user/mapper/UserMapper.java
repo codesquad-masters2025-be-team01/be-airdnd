@@ -2,7 +2,7 @@ package com.dmz.airdnd.user.mapper;
 
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
-import com.dmz.airdnd.user.dto.request.response.UserRequest;
+import com.dmz.airdnd.user.dto.request.UserRequest;
 
 public class UserMapper {
 	public static User toEntity(UserRequest userRequest) {
