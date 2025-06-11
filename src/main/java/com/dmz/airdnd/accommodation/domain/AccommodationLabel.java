@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccommodationOption {
+public class AccommodationLabel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -26,6 +26,6 @@ public class AccommodationOption {
 	private Accommodation accommodation;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "option_id", nullable = false)
-	private Option option;
+	@JoinColumn(name = "label_id", nullable = false)
+	private Label label;
 }
