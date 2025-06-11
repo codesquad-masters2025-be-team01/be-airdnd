@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.dto.request.response.UserRequest;
@@ -33,8 +34,8 @@ class AuthServiceTest {
 	@DisplayName("중복된 유저가 없으면 회원가입을 성공한다.")
 	void testSignup() {
 		//given
-		User user = createTestUser();
-		UserRequest userRequest = createUserRequestFrom(user);
+		User user = TestUserFactory.createTestUser();
+		UserRequest userRequest = TestUserFactory.createUserRequestFrom(user);
 		when(userRepository.existsByLoginId(anyString())).thenReturn(false);
 		when(userRepository.existsByEmail(anyString())).thenReturn(false);
 		when(userRepository.existsByPhone(anyString())).thenReturn(false);
@@ -49,17 +50,6 @@ class AuthServiceTest {
 		assertThat(newUser.getEmail()).isEqualTo(user.getEmail());
 		assertThat(newUser.getPhone()).isEqualTo(user.getPhone());
 		assertThat(newUser.getRole()).isEqualTo(Role.USER);
-	}
-
-	private User createTestUser() {
-		return User.builder()
-			.id(1L)
-			.loginId("testUser")
-			.password("password123")
-			.email("test@test.com")
-			.role(Role.USER)
-			.phone("010-1234-5678")
-			.build();
 	}
 
 	@ParameterizedTest
@@ -90,25 +80,15 @@ class AuthServiceTest {
 	}
 
 	private void assertDuplicateError(Runnable executable, String expectedMessage) {
-		assertThatThrownBy(executable::run)
-			.isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(executable::run).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(expectedMessage);
 	}
 
 	private static Stream<Arguments> provideDuplicateRequests() {
-		return Stream.of(
-			Arguments.of(new UserRequest("test123", "pw", "new@example.com", "010-9999-8888"), "loginId"), // loginId 중복
+		return Stream.of(Arguments.of(new UserRequest("test123", "pw", "new@example.com", "010-9999-8888"), "loginId"),
+			// loginId 중복
 			Arguments.of(new UserRequest("newId", "pw", "test@example.com", "010-9999-8888"), "email"),   // email 중복
 			Arguments.of(new UserRequest("newId", "pw", "new@example.com", "010-1234-5678"), "phone")    // phone 중복
 		);
-	}
-
-	private UserRequest createUserRequestFrom(User user) {
-		return UserRequest.builder()
-			.loginId(user.getLoginId())
-			.password(user.getPassword())
-			.email(user.getEmail())
-			.phone(user.getPhone())
-			.build();
 	}
 }
