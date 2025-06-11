@@ -32,7 +32,7 @@ class AuthServiceTest {
 
 	@Test
 	@DisplayName("중복된 유저가 없으면 회원가입을 성공한다.")
-	void testSignup() {
+	void success_signup() {
 		//given
 		User user = TestUserFactory.createTestUser();
 		UserRequest userRequest = TestUserFactory.createUserRequestFrom(user);
@@ -55,7 +55,7 @@ class AuthServiceTest {
 	@ParameterizedTest
 	@MethodSource("provideDuplicateRequests")
 	@DisplayName("중복된 필드가 있을 경우 회원가입에 실패한다.")
-	void duplicateFieldTest(UserRequest request, String duplicateField) {
+	void fail_signup(UserRequest request, String duplicateField) {
 		//given
 		switch (duplicateField) {
 			case "loginId" -> {
