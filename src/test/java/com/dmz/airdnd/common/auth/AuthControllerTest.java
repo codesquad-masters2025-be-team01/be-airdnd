@@ -75,7 +75,7 @@ class AuthControllerTest {
 
 	private static Stream<Arguments> provideInvalidUserRequests() {
 		return Stream.of(
-			// 1) loginId 빈 값 → 길이(5~25자) 위반
+			// 1) loginId 빈 값 → NotBlank 위반
 			Arguments.of("""
 				{
 				  "loginId": "",
@@ -83,8 +83,39 @@ class AuthControllerTest {
 				  "email": "test@example.com",
 				  "phone": "01012345678"
 				}
+				""", "로그인 아이디는 필수 입력 항목입니다."),
+
+			// 2) loginId 너무 짧음 → 길이(5~25자) 위반
+			Arguments.of("""
+				{
+				  "loginId": "abc",
+				  "password": "validPass123",
+				  "email": "test@example.com",
+				  "phone": "01012345678"
+				}
 				""", "로그인 아이디는 5~25자 이내여야 합니다."),
-			// 2) password 너무 짧음 → 길이(5~25자) 위반
+
+			// 3) loginId 너무 김 → 길이(5~25자) 위반
+			Arguments.of("""
+				{
+				  "loginId": "a".repeat(26),
+				  "password": "validPass123",
+				  "email": "test@example.com",
+				  "phone": "01012345678"
+				}
+				""", "로그인 아이디는 5~25자 이내여야 합니다."),
+
+			// 4) password 빈 값 → NotBlank 위반
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": "",
+				  "email": "test@example.com",
+				  "phone": "01012345678"
+				}
+				""", "비밀번호는 필수 입력 항목입니다."),
+
+			// 5) password 너무 짧음 → 길이(5~25자) 위반
 			Arguments.of("""
 				{
 				  "loginId": "validLogin",
@@ -93,7 +124,28 @@ class AuthControllerTest {
 				  "phone": "01012345678"
 				}
 				""", "비밀번호는 5~25자 이내여야 합니다."),
-			// 3) email 형식 오류
+
+			// 6) password 너무 김 → 길이(5~25자) 위반
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": "a".repeat(26),
+				  "email": "test@example.com",
+				  "phone": "01012345678"
+				}
+				""", "비밀번호는 5~25자 이내여야 합니다."),
+
+			// 7) email 빈 값 → NotBlank 위반
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "",
+				  "phone": "01012345678"
+				}
+				""", "이메일은 필수 입력 항목입니다."),
+
+			// 8) email 형식 오류
 			Arguments.of("""
 				{
 				  "loginId": "validLogin",
@@ -101,8 +153,9 @@ class AuthControllerTest {
 				  "email": "invalid-email",
 				  "phone": "01012345678"
 				}
-				""", "이메일 형식이 올바르지 않습니다."),
-			// 4) email 길이(5~25자) 위반
+				""", "올바른 이메일 형식이어야 합니다."),
+
+			// 9) email 너무 짧음 → 길이(5~25자) 위반
 			Arguments.of("""
 				{
 				  "loginId": "validLogin",
@@ -110,8 +163,29 @@ class AuthControllerTest {
 				  "email": "a@b.c",
 				  "phone": "01012345678"
 				}
-				""", "이메일 형식이 올바르지 않습니다."),
-			// 5) phone 너무 짧음 → 길이(8~25자) 위반
+				""", "이메일은 5~25자 이내여야 합니다."),
+
+			// 10) email 너무 김 → 길이(5~25자) 위반
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "a".repeat(21) + "@ex.com",
+				  "phone": "01012345678"
+				}
+				""", "이메일은 5~25자 이내여야 합니다."),
+
+			// 11) phone 빈 값 → NotBlank 위반
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "test@example.com",
+				  "phone": ""
+				}
+				""", "전화번호는 필수 입력 항목입니다."),
+
+			// 12) phone 너무 짧음 → 길이(8~25자) 위반
 			Arguments.of("""
 				{
 				  "loginId": "validLogin",
@@ -119,6 +193,17 @@ class AuthControllerTest {
 				  "email": "test@example.com",
 				  "phone": "0101234"
 				}
-				""", "전화번호 형식이 올바르지 않습니다."));
+				""", "전화번호는 8~25자 이내여야 합니다."),
+
+			// 13) phone 너무 김 → 길이(8~25자) 위반
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "test@example.com",
+				  "phone": "1234567890123456789012345"
+				}
+				""", "전화번호는 8~25자 이내여야 합니다.")
+		);
 	}
 }
