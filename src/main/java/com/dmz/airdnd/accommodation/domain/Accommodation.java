@@ -1,4 +1,4 @@
-package com.dmz.airdnd.accomodation.domain;
+package com.dmz.airdnd.accommodation.domain;
 
 import java.sql.Timestamp;
 
@@ -11,7 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Accomodation {
+public class Accommodation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

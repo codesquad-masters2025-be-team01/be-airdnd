@@ -1,5 +1,8 @@
-package com.dmz.airdnd.accomodation.domain;
+package com.dmz.airdnd.accommodation.domain;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,16 +19,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccomodationOption {
+public class Image {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "accomodaton_id", nullable = false)
-	private Accomodation accomodation;
+	@JoinColumn(name = "accommodation_id", nullable = false)
+	private Accommodation accommodation;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "option_id", nullable = false)
-	private Option option;
+	@Column(nullable = false, length = 255)
+	private String url;
+
+	@Column(nullable = false)
+	private LocalDateTime createdAt;
 }

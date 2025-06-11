@@ -1,6 +1,6 @@
 package com.dmz.airdnd.user.domain;
 
-import com.dmz.airdnd.accomodation.domain.Accomodation;
+import com.dmz.airdnd.accommodation.domain.Accommodation;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,8 +24,8 @@ public class WishList {
 	private Long id;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "accomodation_id", nullable = false)
-	private Accomodation accomodation;
+	@JoinColumn(name = "accommodation_id", nullable = false)
+	private Accommodation accommodation;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_id", nullable = false)
