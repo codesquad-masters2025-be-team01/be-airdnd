@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.dto.request.response.UserRequest;
 
 @WebMvcTest(AuthController.class)
@@ -30,7 +31,7 @@ class AuthControllerTest {
 	private AuthService authService;
 
 	@Test
-	@DisplayName("POST /auth/signup 성공 시 201 반환하고 서비스 호출")
+	@DisplayName("POST /api/auth/signup 성공 시 201 반환하고 서비스 호출")
 	void success_signup() throws Exception {
 		// given
 		String json = """
@@ -42,12 +43,10 @@ class AuthControllerTest {
 			}
 			""";
 
-		doNothing().when(authService).signup(any(UserRequest.class));
+		when(authService.signup(any())).thenReturn(TestUserFactory.createTestUser());
 
 		// when & then
-		mockMvc.perform(post("/auth/signup")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json))
+		mockMvc.perform(post("/api/auth/signup").contentType(MediaType.APPLICATION_JSON).content(json))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.success").value(true))
 			.andExpect(jsonPath("$.data").isEmpty())
@@ -59,12 +58,10 @@ class AuthControllerTest {
 
 	@ParameterizedTest
 	@MethodSource("provideInvalidUserRequests")
-	@DisplayName("POST /auth/signup 유효성 검사 실패 시 400 반환하고, 예외 코드와 메시지를 포함한다.")
+	@DisplayName("POST /api/auth/signup 유효성 검사 실패 시 400 반환하고, 예외 코드와 메시지를 포함한다.")
 	void fail_signup(String invalidJson, String code, String message) throws Exception {
 
-		mockMvc.perform(post("/auth/signup")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(invalidJson))
+		mockMvc.perform(post("/api/auth/signup").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.success").value(false))
 			.andExpect(jsonPath("$.data").isEmpty())
@@ -80,65 +77,49 @@ class AuthControllerTest {
 		return Stream.of(
 			// 1) loginId 빈 값 → 길이(5~25자) 위반
 			Arguments.of("""
-					{
-					  "loginId": "",
-					  "password": "validPass123",
-					  "email": "test@example.com",
-					  "phone": "01012345678"
-					}
-					""",
-				"INVALID_LOGIN_ID_FORMAT",
-				"로그인 아이디는 5~25자여야 합니다."
-			),
+				{
+				  "loginId": "",
+				  "password": "validPass123",
+				  "email": "test@example.com",
+				  "phone": "01012345678"
+				}
+				""", "INVALID_LOGIN_ID_FORMAT", "로그인 아이디는 5~25자여야 합니다."),
 			// 2) password 너무 짧음 → 길이(5~25자) 위반
 			Arguments.of("""
-					{
-					  "loginId": "validLogin",
-					  "password": "123",
-					  "email": "test@example.com",
-					  "phone": "01012345678"
-					}
-					""",
-				"INVALID_PASSWORD_FORMAT",
-				"비밀번호는 5~25자여야 합니다."
-			),
+				{
+				  "loginId": "validLogin",
+				  "password": "123",
+				  "email": "test@example.com",
+				  "phone": "01012345678"
+				}
+				""", "INVALID_PASSWORD_FORMAT", "비밀번호는 5~25자여야 합니다."),
 			// 3) email 형식 오류
 			Arguments.of("""
-					{
-					  "loginId": "validLogin",
-					  "password": "validPass123",
-					  "email": "invalid-email",
-					  "phone": "01012345678"
-					}
-					""",
-				"INVALID_EMAIL_FORMAT",
-				"유효한 이메일 주소여야 합니다."
-			),
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "invalid-email",
+				  "phone": "01012345678"
+				}
+				""", "INVALID_EMAIL_FORMAT", "유효한 이메일 주소여야 합니다."),
 			// 4) email 길이(5~25자) 위반
 			Arguments.of("""
-					{
-					  "loginId": "validLogin",
-					  "password": "validPass123",
-					  "email": "a@b.c",
-					  "phone": "01012345678"
-					}
-					""",
-				"INVALID_EMAIL_FORMAT",
-				"이메일은 5~25자여야 합니다."
-			),
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "a@b.c",
+				  "phone": "01012345678"
+				}
+				""", "INVALID_EMAIL_FORMAT", "이메일은 5~25자여야 합니다."),
 			// 5) phone 너무 짧음 → 길이(8~25자) 위반
 			Arguments.of("""
-					{
-					  "loginId": "validLogin",
-					  "password": "validPass123",
-					  "email": "test@example.com",
-					  "phone": "0101234"
-					}
-					""",
-				"INVALID_PHONE_FORMAT",
-				"전화번호는 8~25자여야 합니다."
-			)
-		);
+				{
+				  "loginId": "validLogin",
+				  "password": "validPass123",
+				  "email": "test@example.com",
+				  "phone": "0101234"
+				}
+				""", "INVALID_PHONE_FORMAT", "전화번호는 8~25자여야 합니다."));
 	}
 
 }
