@@ -59,14 +59,14 @@ class AuthControllerTest {
 	@ParameterizedTest
 	@MethodSource("provideInvalidUserRequests")
 	@DisplayName("POST /api/auth/signup 유효성 검사 실패 시 400 반환하고, 예외 코드와 메시지를 포함한다.")
-	void fail_signup(String invalidJson, String code, String message) throws Exception {
+	void fail_signup(String invalidJson, String message) throws Exception {
 
 		mockMvc.perform(post("/api/auth/signup").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.success").value(false))
 			.andExpect(jsonPath("$.data").isEmpty())
 			.andExpect(jsonPath("$.error").isNotEmpty())
-			.andExpect(jsonPath("$.error.code").value(code))
+			.andExpect(jsonPath("$.error.code").value("INVALID_REQUEST_FORMAT"))
 			.andExpect(jsonPath("$.error.message").value(message));
 
 		// 서비스 호출 여부 확인
@@ -83,7 +83,7 @@ class AuthControllerTest {
 				  "email": "test@example.com",
 				  "phone": "01012345678"
 				}
-				""", "INVALID_LOGIN_ID_FORMAT", "로그인 아이디는 5~25자여야 합니다."),
+				""", "로그인 아이디는 5~25자 이내여야 합니다."),
 			// 2) password 너무 짧음 → 길이(5~25자) 위반
 			Arguments.of("""
 				{
@@ -92,7 +92,7 @@ class AuthControllerTest {
 				  "email": "test@example.com",
 				  "phone": "01012345678"
 				}
-				""", "INVALID_PASSWORD_FORMAT", "비밀번호는 5~25자여야 합니다."),
+				""", "비밀번호는 5~25자 이내여야 합니다."),
 			// 3) email 형식 오류
 			Arguments.of("""
 				{
@@ -101,7 +101,7 @@ class AuthControllerTest {
 				  "email": "invalid-email",
 				  "phone": "01012345678"
 				}
-				""", "INVALID_EMAIL_FORMAT", "유효한 이메일 주소여야 합니다."),
+				""", "이메일 형식이 올바르지 않습니다."),
 			// 4) email 길이(5~25자) 위반
 			Arguments.of("""
 				{
@@ -110,7 +110,7 @@ class AuthControllerTest {
 				  "email": "a@b.c",
 				  "phone": "01012345678"
 				}
-				""", "INVALID_EMAIL_FORMAT", "이메일은 5~25자여야 합니다."),
+				""", "이메일 형식이 올바르지 않습니다."),
 			// 5) phone 너무 짧음 → 길이(8~25자) 위반
 			Arguments.of("""
 				{
@@ -119,7 +119,6 @@ class AuthControllerTest {
 				  "email": "test@example.com",
 				  "phone": "0101234"
 				}
-				""", "INVALID_PHONE_FORMAT", "전화번호는 8~25자여야 합니다."));
+				""", "전화번호 형식이 올바르지 않습니다."));
 	}
-
 }
