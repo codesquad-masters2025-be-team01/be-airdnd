@@ -10,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
+import com.dmz.airdnd.user.dto.request.response.UserRequest;
 import com.dmz.airdnd.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,7 @@ class AuthServiceTest {
 		assertThat(newUser.getLoginId()).isEqualTo(user.getLoginId());
 		assertThat(newUser.getEmail()).isEqualTo(user.getEmail());
 		assertThat(newUser.getPhone()).isEqualTo(user.getPhone());
-		assertThat(newUser.getRole()).isEqualTo("USER");
+		assertThat(newUser.getRole()).isEqualTo(Role.USER);
 	}
 
 	private User createTestUser() {
@@ -50,7 +52,7 @@ class AuthServiceTest {
 			.loginId("testUser")
 			.password("password123")
 			.email("test@test.com")
-			.role("USER")
+			.role(Role.USER)
 			.phone("010-1234-5678")
 			.build();
 	}
