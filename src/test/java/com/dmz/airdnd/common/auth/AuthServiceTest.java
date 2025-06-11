@@ -34,7 +34,7 @@ class AuthServiceTest {
 	@DisplayName("중복된 유저가 없으면 회원가입을 성공한다.")
 	void success_signup() {
 		//given
-		User user = TestUserFactory.createTestUser();
+		User user = TestUserFactory.createTestUser(1L);
 		UserRequest userRequest = TestUserFactory.createUserRequestFrom(user);
 		when(userRepository.existsByLoginId(anyString())).thenReturn(false);
 		when(userRepository.existsByEmail(anyString())).thenReturn(false);

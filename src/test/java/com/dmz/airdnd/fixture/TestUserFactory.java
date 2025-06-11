@@ -7,7 +7,17 @@ import com.dmz.airdnd.user.dto.request.response.UserRequest;
 public class TestUserFactory {
 	public static User createTestUser() {
 		return User.builder()
-			.id(1L)
+			.loginId("testUser")
+			.password("password123")
+			.email("test@test.com")
+			.role(Role.USER)
+			.phone("010-1234-5678")
+			.build();
+	}
+
+	public static User createTestUser(Long id) {
+		return User.builder()
+			.id(id)
 			.loginId("testUser")
 			.password("password123")
 			.email("test@test.com")
