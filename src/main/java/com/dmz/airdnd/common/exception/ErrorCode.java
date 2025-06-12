@@ -6,9 +6,10 @@ import lombok.Getter;
 public enum ErrorCode {
 	// 유저 관련
 	USER_NOT_FOUND(404, "USER_NOT_FOUND", "해당 유저를 찾을 수 없습니다."),
-	USER_ALREADY_EXISTS(409, "USER_ALREADY_EXISTS", "이미 존재하는 유저입니다."),
-	EMAIL_ALREADY_EXISTS(409, "EMAIL_ALREADY_EXISTS", "이미 존재하는 이메일입니다."),
-	USERNAME_ALREADY_EXISTS(409, "USERNAME_ALREADY_EXISTS", "이미 존재하는 유저이름입니다."),
+	DUPLICATE_LOGIN_ID(409, "DUPLICATE_LOGIN_ID", "이미 존재하는 로그인 아이디입니다."),
+	DUPLICATE_EMAIL(409, "DUPLICATE_EMAIL", "이미 존재하는 이메일입니다."),
+	DUPLICATE_PHONE(409, "DUPLICATE_PHONE", "이미 존재하는 전화번호입니다."),
+
 	// 인증 관련
 	UNAUTHORIZED(401, "UNAUTHORIZED", "인증이 필요합니다."),
 	INVALID_PASSWORD(401, "INVALID_PASSWORD", "잘못된 비밀번호입니다."),
