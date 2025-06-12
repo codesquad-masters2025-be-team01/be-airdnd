@@ -55,28 +55,16 @@ class AuthServiceTest {
 	@ParameterizedTest
 	@MethodSource("provideDuplicateRequests")
 	@DisplayName("중복된 필드가 있을 경우 회원가입에 실패한다.")
-	void fail_signup(UserRequest request, String duplicateField) {
+	void fail_signup(UserRequest request, boolean loginIdResult, boolean emailResult, boolean phoneResult,
+		String expectedResult) {
 		//given
-		switch (duplicateField) {
-			case "loginId" -> {
-				when(userRepository.existsByLoginId(request.getLoginId())).thenReturn(true);
-			}
-			case "email" -> {
-				when(userRepository.existsByLoginId(request.getLoginId())).thenReturn(false);
-				when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
-			}
-			case "phone" -> {
-				when(userRepository.existsByLoginId(request.getLoginId())).thenReturn(false);
-				when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
-				when(userRepository.existsByPhone(request.getPhone())).thenReturn(true);
-			}
-		}
+		// 미리 예외가 발생하면 호출 안할 가능성 있음
+		lenient().when(userRepository.existsByLoginId(request.getLoginId())).thenReturn(loginIdResult);
+		lenient().when(userRepository.existsByEmail(request.getEmail())).thenReturn(emailResult);
+		lenient().when(userRepository.existsByPhone(request.getPhone())).thenReturn(phoneResult);
+
 		//when + then
-		switch (duplicateField) {
-			case "loginId" -> assertDuplicateError(() -> authService.signup(request), "이미 존재하는 로그인 아이디입니다.");
-			case "email" -> assertDuplicateError(() -> authService.signup(request), "이미 존재하는 이메일입니다.");
-			case "phone" -> assertDuplicateError(() -> authService.signup(request), "이미 존재하는 전화번호입니다.");
-		}
+		assertDuplicateError(() -> authService.signup(request), expectedResult);
 	}
 
 	private void assertDuplicateError(Runnable executable, String expectedMessage) {
@@ -85,10 +73,13 @@ class AuthServiceTest {
 	}
 
 	private static Stream<Arguments> provideDuplicateRequests() {
-		return Stream.of(Arguments.of(new UserRequest("test123", "pw", "new@example.com", "010-9999-8888"), "loginId"),
-			// loginId 중복
-			Arguments.of(new UserRequest("newId", "pw", "test@example.com", "010-9999-8888"), "email"),   // email 중복
-			Arguments.of(new UserRequest("newId", "pw", "new@example.com", "010-1234-5678"), "phone")    // phone 중복
+		return Stream.of(
+			Arguments.of(new UserRequest("test123", "pw", "new@example.com", "010-9999-8888"), true, false, false,
+				"이미 존재하는 로그인 아이디입니다."), // loginId 중복
+			Arguments.of(new UserRequest("newId", "pw", "test@example.com", "010-9999-8888"), false, true, false,
+				"이미 존재하는 이메일입니다."),   // email 중복
+			Arguments.of(new UserRequest("newId", "pw", "new@example.com", "010-1234-5678"), false, false, true,
+				"이미 존재하는 전화번호입니다.")    // phone 중복
 		);
 	}
 }
