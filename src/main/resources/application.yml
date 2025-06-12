@@ -12,6 +12,8 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
+  jwt:
+    access-key: ${JWT_ACCESS_KEY}
 
 logging:
   pattern:
