@@ -1,4 +1,4 @@
-package com.dmz.airdnd.accomodation.domain;
+package com.dmz.airdnd.accommodation.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

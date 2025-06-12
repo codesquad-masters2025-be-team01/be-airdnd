@@ -1,4 +1,4 @@
-package com.dmz.airdnd.accomodation.domain;
+package com.dmz.airdnd.accommodation.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Option {
+public class Label {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

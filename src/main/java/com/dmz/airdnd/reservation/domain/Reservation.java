@@ -3,7 +3,7 @@ package com.dmz.airdnd.reservation.domain;
 import java.sql.Date;
 import java.time.LocalDateTime;
 
-import com.dmz.airdnd.accomodation.domain.Accomodation;
+import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -33,8 +33,8 @@ public class Reservation {
 	private User guest;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "accomodation_id", nullable = false)
-	private Accomodation accomodation;
+	@JoinColumn(name = "accommodation_id", nullable = false)
+	private Accommodation accommodation;
 
 	@Column(nullable = false)
 	private Date checkInDate;

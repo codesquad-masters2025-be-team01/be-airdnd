@@ -1,4 +1,4 @@
-package com.dmz.airdnd.accomodation.domain;
+package com.dmz.airdnd.accommodation.domain;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +25,8 @@ public class Image {
 	private Long id;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "accomodation_id", nullable = false)
-	private Accomodation accomodation;
+	@JoinColumn(name = "accommodation_id", nullable = false)
+	private Accommodation accommodation;
 
 	@Column(nullable = false, length = 255)
 	private String url;
