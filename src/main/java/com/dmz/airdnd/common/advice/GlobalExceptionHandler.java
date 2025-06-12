@@ -1,6 +1,9 @@
 package com.dmz.airdnd.common.advice;
 
+import java.util.Comparator;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,6 +27,9 @@ public class GlobalExceptionHandler {
 		String errorMessage = ex.getBindingResult()
 			.getFieldErrors()
 			.stream()
+			.sorted(Comparator
+				.comparing(FieldError::getField)
+				.thenComparing(FieldError::getCode))
 			.map(error -> error.getDefaultMessage())
 			.findFirst()
 			.orElse("요청 형식이 잘못되었습니다.");
