@@ -1,11 +1,14 @@
 package com.dmz.airdnd.stepdefinitions;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.AfterEach;
+import io.cucumber.java.After;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +18,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.common.auth.AuthService;
+import com.dmz.airdnd.user.domain.Role;
+import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 import com.dmz.airdnd.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,8 +49,8 @@ public class SignUpStepDef extends AbstractContainerBase {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@AfterEach
-	void tearDown() {
+	@After
+	public void tearDown() {
 		userRepository.deleteAll();
 	}
 
@@ -80,5 +85,52 @@ public class SignUpStepDef extends AbstractContainerBase {
 			.andExpect(jsonPath("$.success").value(Boolean.parseBoolean(expected.get("success"))))
 			.andExpect(jsonPath("$.data").isEmpty())
 			.andExpect(jsonPath("$.error").isEmpty());
+	}
+
+	@Given("저장소에 {string}가 중복된 유저가 등록되어 있다.")
+	public void 저장소에_중복된_유저가_등록되어_있다(String field) {
+		User.UserBuilder builder = User.builder()
+			.loginId(request.getLoginId())
+			.password(request.getPassword())
+			.email(request.getEmail())
+			.role(Role.USER)
+			.phone(request.getPhone());
+
+		User user;
+		switch (field) {
+			case "loginId":
+				user = builder
+					.email(request.getEmail() + "_dup")
+					.phone(request.getPhone() + "_dup")
+					.build();
+				break;
+			case "email":
+				user = builder
+					.loginId(request.getLoginId() + "_dup")
+					.phone(request.getPhone() + "_dup")
+					.build();
+				break;
+			case "phone":
+				user = builder
+					.loginId(request.getLoginId() + "_dup")
+					.email(request.getEmail() + "_dup")
+					.build();
+				break;
+			default:
+				user = builder.build();
+				break;
+		}
+		userRepository.save(user);
+	}
+
+	@Then("오류 메시지는 {string}이어야 한다.")
+	public void 오류_메시지_검증(String expected) throws Exception {
+		String body = resultActions.andReturn()
+			.getResponse()
+			.getContentAsString();
+		Map<String, Object> resp = objectMapper.readValue(body, Map.class);
+		Map<String, Object> error = (Map<String, Object>)resp.get("error");
+		String actualMessage = (String)error.get("message");
+		assertThat(actualMessage).isEqualTo(expected);
 	}
 }
