@@ -135,12 +135,12 @@ class AuthControllerTest {
 				}
 				""", "비밀번호는 5~25자 이내여야 합니다."),
 
-			// 7) email 빈 값 → NotBlank 위반
+			// 7) email null 값 → NotBlank 위반
 			Arguments.of("""
 				{
 				  "loginId": "validLogin",
 				  "password": "validPass123",
-				  "email": "        ",
+				  "email": null,
 				  "phone": "01012345678"
 				}
 				""", "이메일은 필수 입력 항목입니다."),
