@@ -5,7 +5,7 @@ public class DuplicateResourceException extends BaseException {
 		super(errorCode);
 	}
 
-	public DuplicateResourceException(ErrorCode errorCode, String customMessage) {
-		super(errorCode, customMessage);
+	public DuplicateResourceException(ErrorCode errorCode, String message) {
+		super(errorCode, message);
 	}
 }

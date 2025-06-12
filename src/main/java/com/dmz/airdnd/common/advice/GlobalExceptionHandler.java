@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 	@ExceptionHandler(BaseException.class)
 	public ResponseEntity<ApiResponse<Void>> handleBaseException(BaseException ex) {
-		ApiResponse<Void> response = ApiResponse.failure(ex.getCustomMessage(), ex.getErrorCode().getCode());
+		ApiResponse<Void> response = ApiResponse.failure(ex.getMessage(), ex.getErrorCode().getCode());
 		return ResponseEntity.status(ex.getErrorCode().getStatus()).body(response);
 	}
 
