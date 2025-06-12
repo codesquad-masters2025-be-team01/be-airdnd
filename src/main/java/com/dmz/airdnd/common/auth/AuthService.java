@@ -3,6 +3,8 @@ package com.dmz.airdnd.common.auth;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dmz.airdnd.common.exception.DuplicateResourceException;
+import com.dmz.airdnd.common.exception.ErrorCode;
 import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 import com.dmz.airdnd.user.mapper.UserMapper;
@@ -18,13 +20,13 @@ public class AuthService {
 	@Transactional
 	public User signup(UserRequest userRequest) {
 		if (userRepository.existsByLoginId(userRequest.getLoginId())) {
-			throw new IllegalArgumentException("이미 존재하는 로그인 아이디입니다.");
+			throw new DuplicateResourceException(ErrorCode.DUPLICATE_LOGIN_ID);
 		}
 		if (userRepository.existsByEmail(userRequest.getEmail())) {
-			throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+			throw new DuplicateResourceException(ErrorCode.DUPLICATE_EMAIL);
 		}
 		if (userRepository.existsByPhone(userRequest.getPhone())) {
-			throw new IllegalArgumentException("이미 존재하는 전화번호입니다.");
+			throw new DuplicateResourceException(ErrorCode.DUPLICATE_PHONE);
 		}
 
 		User user = UserMapper.toEntity(userRequest);
