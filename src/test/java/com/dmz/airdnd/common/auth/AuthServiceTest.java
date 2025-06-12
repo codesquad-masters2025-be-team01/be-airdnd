@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.dmz.airdnd.common.exception.DuplicateResourceException;
 import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
@@ -68,7 +69,7 @@ class AuthServiceTest {
 	}
 
 	private void assertDuplicateError(Runnable executable, String expectedMessage) {
-		assertThatThrownBy(executable::run).isInstanceOf(IllegalArgumentException.class)
+		assertThatThrownBy(executable::run).isInstanceOf(DuplicateResourceException.class)
 			.hasMessageContaining(expectedMessage);
 	}
 
