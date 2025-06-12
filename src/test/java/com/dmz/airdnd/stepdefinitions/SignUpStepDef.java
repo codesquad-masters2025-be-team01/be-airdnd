@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.common.auth.AuthService;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 import com.dmz.airdnd.user.repository.UserRepository;
@@ -26,7 +28,7 @@ import io.cucumber.spring.CucumberContextConfiguration;
 @SpringBootTest
 @AutoConfigureMockMvc
 @CucumberContextConfiguration
-public class SignUpStepDef {
+public class SignUpStepDef extends AbstractContainerBase {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -41,6 +43,11 @@ public class SignUpStepDef {
 	private ResultActions resultActions;
 	@Autowired
 	private ObjectMapper objectMapper;
+
+	@AfterEach
+	void tearDown() {
+		userRepository.deleteAll();
+	}
 
 	@Given("유효한 회원가입 요청 정보가 준비되어 있다.")
 	public void 유효한_회원가입_요청_정보_준비되어_있다() {
