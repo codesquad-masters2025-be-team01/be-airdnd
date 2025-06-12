@@ -13,7 +13,5 @@ import org.junit.platform.suite.api.Suite;
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:build/reports/cucumber.html, summary")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.dmz.airdnd.stepdefinitions")
 public class CucumberTestRunner {
-	/*
-	Cucumber 테스트 러너
-	 */
+	//	Cucumber 테스트 러너
 }
