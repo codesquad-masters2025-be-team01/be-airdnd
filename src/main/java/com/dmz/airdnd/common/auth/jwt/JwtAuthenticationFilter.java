@@ -75,7 +75,7 @@ public class JwtAuthenticationFilter implements Filter {
 	}
 
 	private boolean isPermitAllPath(String uri) {
-		return uri.equals("/api/signup") || uri.equals("/api/login");
+		return uri.equals("/api/auth/signup") || uri.equals("/api/auth/login");
 	}
 
 	private void writeJsonResponse(HttpServletResponse response, ApiResponse<Void> dto) throws
