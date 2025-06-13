@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.common.auth.AuthService;
+import com.dmz.airdnd.common.dto.ApiError;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.dto.request.UserRequest;
@@ -91,36 +92,24 @@ public class SignUpStepDef extends AbstractContainerBase {
 	@Given("저장소에 {string}가 중복된 유저가 등록되어 있다.")
 	public void 저장소에_중복된_유저가_등록되어_있다(String field) {
 		User.UserBuilder builder = User.builder()
-			.loginId(request.getLoginId())
-			.password(request.getPassword())
-			.email(request.getEmail())
+			.loginId("otherUserId")
+			.password("otherPassword")
+			.email("other@test.com")
 			.role(Role.USER)
-			.phone(request.getPhone());
+			.phone("01098765432");
 
-		User user;
-		switch (field) {
-			case "loginId":
-				user = builder
-					.email(request.getEmail() + "_dup")
-					.phone(request.getPhone() + "_dup")
-					.build();
-				break;
-			case "email":
-				user = builder
-					.loginId(request.getLoginId() + "_dup")
-					.phone(request.getPhone() + "_dup")
-					.build();
-				break;
-			case "phone":
-				user = builder
-					.loginId(request.getLoginId() + "_dup")
-					.email(request.getEmail() + "_dup")
-					.build();
-				break;
-			default:
-				user = builder.build();
-				break;
-		}
+		User user = switch (field) {
+			case "loginId" -> builder
+				.loginId("user123")
+				.build();
+			case "email" -> builder
+				.email("user@example.com")
+				.build();
+			case "phone" -> builder
+				.phone("01012345678")
+				.build();
+			default -> builder.build();
+		};
 		userRepository.save(user);
 	}
 
@@ -129,9 +118,11 @@ public class SignUpStepDef extends AbstractContainerBase {
 		String body = resultActions.andReturn()
 			.getResponse()
 			.getContentAsString();
-		Map<String, Object> resp = objectMapper.readValue(body, Map.class);
-		Map<String, Object> error = (Map<String, Object>)resp.get("error");
-		String actualMessage = (String)error.get("message");
+
+		// Object 를 써야만 했는가?
+		Map<String, ApiError> errorResponse = objectMapper.readValue(body, Map.class);
+		Map<String, String> error = (Map<String, String>)errorResponse.get("error");
+		String actualMessage = error.get("message");
 		assertThat(actualMessage).isEqualTo(expected);
 	}
 }
