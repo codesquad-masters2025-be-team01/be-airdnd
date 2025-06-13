@@ -74,13 +74,12 @@ public class SignUpStepDef extends AbstractContainerBase {
 		resultActions.andExpect(status().isCreated());
 	}
 
-	@Then("응답 본문은 다음과 같아야 한다:")
-	public void 응답_본문은_다음과_같아야_한다(DataTable dataTable) throws Exception {
-		Map<String, String> expected = dataTable.asMaps().get(0);
+	@Then("응답 본문은 success는 true이고 data와 error는 null이어야 한다.")
+	public void 응답_본문은_다음과_같아야_한다() throws Exception {
 		resultActions
-			.andExpect(jsonPath("$.success").value(Boolean.parseBoolean(expected.get("success"))))
-			.andExpect(jsonPath("$.data").isEmpty())
-			.andExpect(jsonPath("$.error").isEmpty());
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.data").value(nullValue()))
+			.andExpect(jsonPath("$.error").value(nullValue()));
 	}
 
 	@Given("저장소에 {string}가 중복된 유저가 등록되어 있다.")
