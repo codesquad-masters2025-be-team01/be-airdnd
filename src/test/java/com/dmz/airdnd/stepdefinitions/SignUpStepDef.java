@@ -1,35 +1,29 @@
 package com.dmz.airdnd.stepdefinitions;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.Map;
-
-import io.cucumber.java.After;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
 import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.common.auth.AuthService;
-import com.dmz.airdnd.common.dto.ApiError;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 import com.dmz.airdnd.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
+
+import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -113,16 +107,14 @@ public class SignUpStepDef extends AbstractContainerBase {
 		userRepository.save(user);
 	}
 
-	@Then("오류 메시지는 {string}이어야 한다.")
-	public void 오류_메시지_검증(String expected) throws Exception {
-		String body = resultActions.andReturn()
-			.getResponse()
-			.getContentAsString();
-
-		// Object 를 써야만 했는가?
-		Map<String, ApiError> errorResponse = objectMapper.readValue(body, Map.class);
-		Map<String, String> error = (Map<String, String>)errorResponse.get("error");
-		String actualMessage = error.get("message");
-		assertThat(actualMessage).isEqualTo(expected);
+	@Then("오류 코드는 {string}이고, 메시지는 {string}이어야 한다.")
+	public void 오류_메시지_검증(String code, String expected) throws Exception {
+		resultActions
+				.andExpect(status().isConflict())
+				.andExpect(jsonPath("$.success").value(false))
+				.andExpect(jsonPath("$.data").isEmpty())
+				.andExpect(jsonPath("$.error").isNotEmpty())
+				.andExpect(jsonPath("$.error.code").value(code))
+				.andExpect(jsonPath("$.error.message").value(expected));
 	}
 }
