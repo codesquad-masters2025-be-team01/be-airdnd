@@ -49,7 +49,7 @@ class JwtUtilTest {
 			.getBody();
 
 		assertThat(accessToken).isNotNull();
-		assertThat(String.valueOf(user.getId())).isEqualTo(claims.getSubject());
+		assertThat(claims.getSubject()).isEqualTo(String.valueOf(user.getId()));
 	}
 
 	@Test
@@ -74,12 +74,8 @@ class JwtUtilTest {
 	@DisplayName("비정상적인 토큰은 유효성 검사를 실패한다.")
 	void fail_validateToken(String invalidateToken, String expectedResult) {
 		//when + then
-		assertJwtValidationError(() -> jwtUtil.validateToken(invalidateToken), expectedResult);
-	}
-
-	private void assertJwtValidationError(Runnable executable, String expectedMessage) {
-		assertThatThrownBy(executable::run).isInstanceOf(JwtValidationException.class)
-			.hasMessageContaining(expectedMessage);
+		assertThatThrownBy(() -> jwtUtil.validateToken(invalidateToken)).isInstanceOf(JwtValidationException.class)
+			.hasMessageContaining(expectedResult);
 	}
 
 	private static Stream<Arguments> provideInvalidJwtToken() {
