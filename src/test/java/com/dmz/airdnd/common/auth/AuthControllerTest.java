@@ -19,6 +19,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.dmz.airdnd.common.auth.dto.LoginRequest;
+import com.dmz.airdnd.common.auth.jwt.JwtUtil;
 import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 
@@ -30,6 +31,9 @@ class AuthControllerTest {
 
 	@MockitoBean
 	private AuthService authService;
+
+	@MockitoBean
+	private JwtUtil jwtUtil;
 
 	@Test
 	@DisplayName("POST /api/auth/signup 성공 시 201 반환하고 서비스 호출")
