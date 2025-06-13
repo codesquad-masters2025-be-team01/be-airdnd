@@ -13,12 +13,9 @@ public abstract class AbstractContainerBase {
 		.withUsername("test")
 		.withPassword("test");
 
-	static {
-		mysql.start(); // 컨테이너를 static 블록에서 강제 시작
-	}
-
 	@DynamicPropertySource
 	static void overrideProps(DynamicPropertyRegistry registry) {
+		mysql.start();
 		registry.add("spring.datasource.url", mysql::getJdbcUrl);
 		registry.add("spring.datasource.username", mysql::getUsername);
 		registry.add("spring.datasource.password", mysql::getPassword);
