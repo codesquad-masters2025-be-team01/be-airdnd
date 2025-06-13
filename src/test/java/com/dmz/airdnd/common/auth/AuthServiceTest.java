@@ -3,6 +3,7 @@ package com.dmz.airdnd.common.auth;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.dmz.airdnd.common.auth.dto.LoginRequest;
+import com.dmz.airdnd.common.auth.jwt.JwtUtil;
 import com.dmz.airdnd.common.exception.DuplicateResourceException;
+import com.dmz.airdnd.common.exception.InvalidPasswordException;
+import com.dmz.airdnd.common.exception.UserNotFoundException;
+import com.dmz.airdnd.fixture.TestLoginRequestFactory;
 import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
@@ -30,6 +36,9 @@ class AuthServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
+
+	@Mock
+	private JwtUtil jwtUtil;
 
 	@Test
 	@DisplayName("중복된 유저가 없으면 회원가입을 성공한다.")
@@ -82,5 +91,48 @@ class AuthServiceTest {
 			Arguments.of(new UserRequest("newId", "pw", "new@example.com", "010-1234-5678"), false, false, true,
 				"이미 존재하는 전화번호입니다.")    // phone 중복
 		);
+	}
+
+	@Test
+	@DisplayName("올바른 로그인 정보로 로그인하면 JWT 토큰을 반환한다.")
+	void success_login() {
+		//given
+		LoginRequest loginRequest = TestLoginRequestFactory.createLoginRequest();
+		User user = TestUserFactory.createTestUser();
+		when(userRepository.findByLoginId(loginRequest.getLoginId())).thenReturn(Optional.of(user));
+		when(jwtUtil.generateAccessToken(user)).thenReturn("mock-jwt-token");
+
+		//when
+		String token = authService.login(loginRequest);
+
+		//then
+		assertThat(token).isEqualTo("mock-jwt-token");
+	}
+
+	@Test
+	@DisplayName("존재하지 않은 아이디로 로그인하면 로그인에 실패한다.")
+	void fail_login_user_not_found() {
+		//given
+		LoginRequest loginRequest = TestLoginRequestFactory.createLoginRequest();
+		when(userRepository.findByLoginId(loginRequest.getLoginId())).thenReturn(Optional.empty());
+
+		//when + then
+		assertThatThrownBy(() -> authService.login(loginRequest))
+			.isInstanceOf(UserNotFoundException.class)
+			.hasMessageContaining("해당 유저를 찾을 수 없습니다.");
+	}
+
+	@Test
+	@DisplayName("등록된 비밀번호와 불일치하면 로그인에 실패한다.")
+	void fail_login_invalidPassword() {
+		//given
+		LoginRequest loginRequest = TestLoginRequestFactory.createLoginRequest("invalidPassword1234");
+		User user = TestUserFactory.createTestUser();
+		when(userRepository.findByLoginId(loginRequest.getLoginId())).thenReturn(Optional.of(user));
+
+		//when + then
+		assertThatThrownBy(() -> authService.login(loginRequest))
+			.isInstanceOf(InvalidPasswordException.class)
+			.hasMessageContaining("잘못된 비밀번호입니다.");
 	}
 }

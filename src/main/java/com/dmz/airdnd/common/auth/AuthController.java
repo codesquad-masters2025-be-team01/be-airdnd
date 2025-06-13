@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dmz.airdnd.common.auth.dto.LoginRequest;
 import com.dmz.airdnd.common.dto.ApiResponse;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 
@@ -23,5 +24,11 @@ public class AuthController {
 	public ResponseEntity<ApiResponse<Void>> signup(@Valid @RequestBody UserRequest userRequest) {
 		authService.signup(userRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null));
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest loginRequest) {
+		String token = authService.login(loginRequest);
+		return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(token));
 	}
 }

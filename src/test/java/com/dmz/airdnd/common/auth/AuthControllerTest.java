@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.dmz.airdnd.common.auth.dto.LoginRequest;
+import com.dmz.airdnd.common.auth.jwt.JwtUtil;
 import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.user.dto.request.UserRequest;
 
@@ -29,6 +31,9 @@ class AuthControllerTest {
 
 	@MockitoBean
 	private AuthService authService;
+
+	@MockitoBean
+	private JwtUtil jwtUtil;
 
 	@Test
 	@DisplayName("POST /api/auth/signup 성공 시 201 반환하고 서비스 호출")
@@ -204,6 +209,63 @@ class AuthControllerTest {
 				  "phone": "123456123456123456123456123456"
 				}
 				""", "전화번호는 8~25자 이내여야 합니다.")
+		);
+	}
+
+	@Test
+	@DisplayName("POST /api/auth/login 성공 시 201 반환하고 서비스 호출")
+	void success_login() throws Exception {
+		// given
+		String json = """
+			{
+			  "loginId": "user123",
+			  "password": "pass!234"
+			}
+			""";
+		String token = "Mock-JWT-Token";
+		when(authService.login(any())).thenReturn(token);
+
+		// when & then
+		mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(json))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.data").value(token))
+			.andExpect(jsonPath("$.error").isEmpty());
+
+		// service 호출 확인
+		verify(authService).login(any(LoginRequest.class));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideInvalidLoginRequests")
+	@DisplayName("POST /api/auth/login 유효성 검사 실패 시 400 반환")
+	void fail_login_validation(String invalidJson, String message) throws Exception {
+		mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.success").value(false))
+			.andExpect(jsonPath("$.data").isEmpty())
+			.andExpect(jsonPath("$.error").isNotEmpty())
+			.andExpect(jsonPath("$.error.code").value("INVALID_REQUEST_FORMAT"))
+			.andExpect(jsonPath("$.error.message").value(message));
+
+		verify(authService, never()).login(any(LoginRequest.class));
+	}
+
+	private static Stream<Arguments> provideInvalidLoginRequests() {
+		return Stream.of(
+			Arguments.of("""
+				{
+				  "loginId": "",
+				  "password": "validPass123"
+				}
+				""", "아이디를 입력해주세요."),
+
+			Arguments.of("""
+				{
+				  "loginId": "validLogin",
+				  "password": ""
+				}
+				""", "비밀번호를 입력해주세요.")
 		);
 	}
 }
