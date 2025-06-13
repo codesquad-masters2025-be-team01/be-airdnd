@@ -62,7 +62,6 @@ public class JwtAuthenticationFilter implements Filter {
 		try {
 			Claims claims = jwtUtil.validateToken(accessToken);
 			httpRequest.setAttribute("id", claims.getSubject());
-			httpRequest.setAttribute("loginId", claims.get("loginId"));
 			httpRequest.setAttribute("role", claims.get("role"));
 		} catch (JwtValidationException e) {
 			writeJsonResponse(httpResponse,
@@ -75,7 +74,7 @@ public class JwtAuthenticationFilter implements Filter {
 	}
 
 	private boolean isPermitAllPath(String uri) {
-		return uri.equals("/api/auth/signup") || uri.equals("/api/auth/login");
+		return uri.startsWith("/api/auth") || uri.startsWith("/swagger-ui");
 	}
 
 	private void writeJsonResponse(HttpServletResponse response, ApiResponse<Void> dto) throws
