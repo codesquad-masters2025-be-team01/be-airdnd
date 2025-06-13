@@ -63,6 +63,7 @@ public class SignUpStepDef extends AbstractContainerBase {
 
 	@Given("저장소에 동일한 loginId, email, phone을 가진 유저가 존재하지 않는다.")
 	public void 저장소에_동일한_유저가_존재하지_않는다() {
+		userRepository.deleteAll();
 	}
 
 	@When("사용자가 회원가입 API를 호출했을 때")
