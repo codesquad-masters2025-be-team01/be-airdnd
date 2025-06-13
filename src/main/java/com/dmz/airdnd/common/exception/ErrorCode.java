@@ -19,6 +19,7 @@ public enum ErrorCode {
 	EXPIRED_JWT_TOKEN(401, "EXPIRED_JWT_TOKEN", "만료된 JWT 토큰입니다."),
 	UNSUPPORTED_JWT_TOKEN(401, "UNSUPPORTED_JWT_TOKEN", "지원하지 않는 JWT 토큰입니다."),
 	INVALID_JWT_TOKEN(401, "INVALID_JWT_TOKEN", "JWT 토큰이 잘못되었습니다."),
+	EMPTY_JWT_TOKEN(401, "EMPTY_JWT_TOKEN", "헤더에 JWT 토큰이 없습니다."),
 
 	// 요청 포맷 관련
 	INVALID_REQUEST_FORMAT(400, "INVALID_REQUEST_FORMAT", "잘못된 요청 형식입니다."),
