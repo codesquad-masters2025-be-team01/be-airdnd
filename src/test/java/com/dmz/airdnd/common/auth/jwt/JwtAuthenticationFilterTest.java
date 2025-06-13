@@ -1,6 +1,6 @@
 package com.dmz.airdnd.common.auth.jwt;
 
-import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.*;
 
 import java.util.stream.Stream;
 
@@ -39,20 +39,24 @@ class JwtAuthenticationFilterTest {
 
 	@ParameterizedTest
 	@MethodSource("provideRequestUris")
-	@DisplayName("JWT 토큰이 유효하면 필터를 통과한다.")
+	@DisplayName("JWT 토큰이 유효하면 필터를 통과하고 HttpServletRequest에 토큰 정보를 저장한다.")
 	void success_doFilter(String method, String uri) throws Exception {
-		given(request.getMethod()).willReturn(method);
-		given(request.getRequestURI()).willReturn(uri);
-		given(request.getHeader("Authorization")).willReturn("Bearer valid.token");
-		Claims claims = mock(Claims.class);
-		given(claims.getSubject()).willReturn("1");
-		given(claims.get("loginId")).willReturn("testUser");
-		given(jwtUtil.validateToken("valid.token")).willReturn(claims);
+		//given
+		when(request.getMethod()).thenReturn(method);
+		when(request.getRequestURI()).thenReturn(uri);
+		when(request.getHeader("Authorization")).thenReturn("Bearer valid.token");
 
+		Claims claims = mock(Claims.class);
+		when(claims.getSubject()).thenReturn("1");
+		when(claims.get("role")).thenReturn("USER");
+		when(jwtUtil.validateToken("valid.token")).thenReturn(claims);
+
+		//when
 		jwtAuthenticationFilter.doFilter(request, response, filterChain);
 
+		//then
 		verify(request).setAttribute("id", "1");
-		verify(request).setAttribute("loginId", "testUser");
+		verify(request).setAttribute("role", "USER");
 		verify(filterChain).doFilter(request, response);
 	}
 
@@ -66,24 +70,26 @@ class JwtAuthenticationFilterTest {
 	}
 
 	@Test
-	@DisplayName("OPTIONS 메소드는 필터를 통과한다.")
+	@DisplayName("OPTIONS 메소드는 200 반환한다.")
 	void success_pass_filter() throws Exception {
-		given(request.getMethod()).willReturn("OPTIONS");
+		//given
+		when(request.getMethod()).thenReturn("OPTIONS");
 
+		//when + then
 		jwtAuthenticationFilter.doFilter(request, response, filterChain);
-
-		verify(filterChain, never()).doFilter(any(), any());
+		verify(response).setStatus(HttpServletResponse.SC_OK);
 	}
 
 	@ParameterizedTest
 	@MethodSource("providePermissionUris")
 	@DisplayName("토큰이 없어도 인증 예외 경로는 필터를 통과한다.")
 	void success_doFilter_permissionUri(String method, String uri) throws Exception {
-		given(request.getMethod()).willReturn(method);
-		given(request.getRequestURI()).willReturn(uri);
+		//given
+		when(request.getMethod()).thenReturn(method);
+		when(request.getRequestURI()).thenReturn(uri);
 
+		//when + then
 		jwtAuthenticationFilter.doFilter(request, response, filterChain);
-
 		verify(filterChain).doFilter(request, response);
 	}
 
@@ -98,9 +104,11 @@ class JwtAuthenticationFilterTest {
 	@MethodSource("provideInvalidTokens")
 	@DisplayName("Authorization 헤더가 없으면 401 반환하고, 예외 코드와 메시지를 포함한다.")
 	void fail_doFilter(String invalidToken) throws Exception {
-		given(request.getMethod()).willReturn("GET");
-		given(request.getRequestURI()).willReturn("/api/accommodation");
-		given(request.getHeader("Authorization")).willReturn(invalidToken);
+		when(request.getMethod()).thenReturn("GET");
+		when(request.getRequestURI()).thenReturn("/api/accommodation");
+		when(request.getHeader("Authorization")).thenReturn(invalidToken);
+		java.io.PrintWriter writer = mock(java.io.PrintWriter.class);
+		when(response.getWriter()).thenReturn(writer);
 
 		jwtAuthenticationFilter.doFilter(request, response, filterChain);
 
