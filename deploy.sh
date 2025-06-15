@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# 0. 락 획득 (한 번에 하나의 프로세스만 동작)
+exec 200>/var/lock/deploy.lock
+flock -n 200 || { echo "[ERROR] 이미 배포 스크립트 실행 중. 종료합니다."; exit 1; }
+
 # 1. 현재 nginx 설정에서 active 대상 읽기
 CURRENT=$(grep 'server app' ./nginx/conf.d/default.conf | grep -o 'app[a-z]*')
 
