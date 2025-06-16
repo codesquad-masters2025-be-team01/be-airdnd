@@ -1,7 +1,7 @@
 package com.dmz.airdnd.reservation.domain;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.user.domain.User;
