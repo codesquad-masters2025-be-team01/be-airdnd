@@ -8,14 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.dmz.airdnd.AbstractContainerBase;
+import com.dmz.airdnd.accommodation.repository.AccommodationRepository;
 import com.dmz.airdnd.common.auth.AuthService;
 import com.dmz.airdnd.common.auth.jwt.JwtUtil;
 import com.dmz.airdnd.fixture.TestAccommodationFactory;
@@ -27,12 +25,8 @@ import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@CucumberContextConfiguration
-public class AccommodationSearchStepDef extends AbstractContainerBase {
+public class AccommodationSearchStepDef {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -60,24 +54,24 @@ public class AccommodationSearchStepDef extends AbstractContainerBase {
 		accommodationRepository.deleteAll();
 	}
 
-	@Given("여러 숙소가 시스템에 등록되어 있다.")
+	@Given("여러 숙소 데이터가 사전에 등록되어 있다")
 	public void 여러_숙소가_시스템에_등록되어_있다() {
 		accommodationRepository.saveAll(TestAccommodationFactory.createTestAccommodationList());
 	}
 
 	@Given("User 사용자로 로그인이 되어있다.")
 	public void User_사용자로_로그인이_되어있다() {
-		accessToken = jwtUtil.generateAccessToken(TestUserFactory.createTestUser());
+		accessToken = jwtUtil.generateAccessToken(TestUserFactory.createTestUser(1L));
 	}
 
-	@When("사용자가 다음 조건으로 필터링을 걸고 검색한다.")
+	@When("사용자가 다음 조건으로 필터링을 건다.:")
 	public void 사용자가_조건으로_필터링을_걸고_검색한다(DataTable dataTable) {
 		Map<String, String> filter = dataTable.asMaps(String.class, String.class).get(0);
 
 		requestParams.putAll(filter);
 	}
 
-	@When("다음 페이지네이션 조건을 건다.")
+	@When("다음 페이지네이션 조건을 건다.:")
 	public void 다음_페이지네이션_조건을_건다(DataTable dataTable) {
 		Map<String, String> pagination = dataTable.asMaps(String.class, String.class).get(0);
 
@@ -121,7 +115,7 @@ public class AccommodationSearchStepDef extends AbstractContainerBase {
 			.andExpect(jsonPath("$.data.totalPages").value(Integer.parseInt(totalPages)));
 	}
 
-	@Then("다음 이름의 숙소들이 반환되어야 한다.")
+	@Then("다음 정보의 숙소들이 반환되어야 한다.:")
 	public void 다음_이름의_숙소들이_반환되어야_한다(DataTable dataTable) throws Exception {
 		List<Map<String, String>> accommodations = dataTable.asMaps(String.class, String.class);
 
