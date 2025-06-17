@@ -2,8 +2,6 @@ package com.dmz.airdnd.reservation.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -59,20 +57,12 @@ class AvailabilityRepositoryTest extends AbstractContainerBase {
 
 	@Test
 	@DisplayName("예약 기간 동안 각 날짜에 대한 Availability가 모두 저장된다")
-	void success_saveAvailability() {
+	void success_saveAllAvailability() {
 		//given
-		List<Availability> availabilities = new ArrayList<>();
-
-		for (LocalDate date = reservation.getCheckInDate(); date.isBefore(
-			reservation.getCheckOutDate()); date = date.plusDays(1)) {
-			Availability availability = TestAvailabilityFactory.createTestAvailability(accommodation, reservation,
-				date);
-			availabilities.add(availability);
-		}
-
+		List<Availability> availabilities = TestAvailabilityFactory.createTestAvailabilities(accommodation,
+			reservation);
 		//when
 		availabilityRepository.saveAll(availabilities);
-
 		//then
 		List<Availability> newAvailabilities = availabilityRepository.findAll();
 		assertThat(newAvailabilities)
