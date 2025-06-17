@@ -1,0 +1,16 @@
+package com.dmz.airdnd.accommodation.util;
+
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
+
+public class GeometryFactory {
+
+	private static final org.locationtech.jts.geom.GeometryFactory geometryFactory =
+		new org.locationtech.jts.geom.GeometryFactory(
+			new org.locationtech.jts.geom.PrecisionModel(), 4326
+		);
+
+	public static Point createPoint(double longitude, double latitude) {
+		return geometryFactory.createPoint(new Coordinate(longitude, latitude));
+	}
+}
