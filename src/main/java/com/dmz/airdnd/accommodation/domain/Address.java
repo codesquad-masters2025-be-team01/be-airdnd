@@ -25,20 +25,11 @@ public class Address {
 	@Column(nullable = false, length = 50)
 	private String country;
 
-	@Column(nullable = false, length = 50)
-	private String city;
-
-	@Column(length = 50)
-	private String state;
-
-	@Column(length = 20)
-	private String postalCode;
+	@Column(length = 255, nullable = false)
+	private String baseAddress;
 
 	@Column(length = 255)
-	private String addressLine1;
-
-	@Column(length = 255)
-	private String addressLine2;
+	private String detailedAddress;
 
 	@Column(nullable = false, columnDefinition = "POINT SRID 4326 NOT NULL")
 	private Point location;
