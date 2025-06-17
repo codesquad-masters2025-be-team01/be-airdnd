@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.accommodation.domain.Accommodation;
-import com.dmz.airdnd.accommodation.domain.Address;
 import com.dmz.airdnd.accommodation.domain.repository.AccommodationRepository;
 import com.dmz.airdnd.accommodation.domain.repository.AddressRepository;
 import com.dmz.airdnd.fixture.TestAccommodationFactory;
@@ -43,16 +42,15 @@ class ReservationRepositoryTest extends AbstractContainerBase {
 	@BeforeEach
 	void setup() {
 		guest = userRepository.save(TestUserFactory.createTestUser());
-
-		Address address = addressRepository.save(TestAddressFactory.createTestAddress());
-		accommodation = accommodationRepository.save(TestAccommodationFactory.createTestAccommodation(address));
+		addressRepository.save(TestAddressFactory.createTestAddress());
+		accommodation = accommodationRepository.save(TestAccommodationFactory.createTestAccommodation());
 	}
 
 	@Test
 	@DisplayName("예약을 등록할 수 있다.")
 	void success_saveReservation() {
 		//given
-		Reservation reservation = TestReservationFactory.createTestReservation(accommodation, guest);
+		Reservation reservation = TestReservationFactory.createTestReservation();
 
 		//when
 		Reservation newReservation = reservationRepository.save(reservation);
