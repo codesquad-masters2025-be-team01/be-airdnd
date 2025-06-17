@@ -10,6 +10,8 @@ public class GeometryFactory {
 			new org.locationtech.jts.geom.PrecisionModel(), 4326
 		);
 
+	// longitude : 경도
+	// latitude : 위도
 	public static Point createPoint(double longitude, double latitude) {
 		return geometryFactory.createPoint(new Coordinate(longitude, latitude));
 	}
