@@ -1,18 +1,20 @@
 package com.dmz.airdnd.fixture;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
+import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.reservation.domain.Reservation;
 import com.dmz.airdnd.reservation.domain.ReservationStatus;
+import com.dmz.airdnd.user.domain.User;
 
 public class TestReservationFactory {
-	public static Reservation createTestReservation() {
+	public static Reservation createTestReservation(User guest, Accommodation accommodation) {
 		return Reservation.builder()
-			.guest(TestUserFactory.createTestUser(1L))
-			.accommodation(TestAccommodationFactory.createTestAccommodation(1L))
-			.checkInDate(new Date())
-			.checkOutDate(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24))  // 1일 후
+			.guest(guest)
+			.accommodation(accommodation)
+			.checkInDate(LocalDate.of(2025, 7, 21))
+			.checkOutDate(LocalDate.of(2025, 7, 23))
 			.numberOfGuests(10)
 			.totalPrice(200000)
 			.status(ReservationStatus.PENDING)
