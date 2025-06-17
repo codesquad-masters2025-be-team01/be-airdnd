@@ -1,6 +1,6 @@
 package com.dmz.airdnd.reservation.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 
@@ -27,7 +27,7 @@ public class Availability {
 	private Long id;
 
 	@Column(nullable = false)
-	private Date date;
+	private LocalDate date;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "accommodation_id", nullable = false)
