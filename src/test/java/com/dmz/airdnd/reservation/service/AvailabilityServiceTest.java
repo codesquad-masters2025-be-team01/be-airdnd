@@ -27,7 +27,7 @@ class AvailabilityServiceTest {
 	private AvailabilityRepository availabilityRepository;
 
 	@Test
-	@DisplayName("")
+	@DisplayName("예약 정보를 기반으로 Availability 목록을 저장한다")
 	void success_createAvailability() {
 		//given
 		Accommodation accommodation = Mockito.mock(Accommodation.class);
