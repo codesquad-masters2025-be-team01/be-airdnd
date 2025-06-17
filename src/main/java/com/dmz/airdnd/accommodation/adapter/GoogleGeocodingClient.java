@@ -8,6 +8,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.dmz.airdnd.accommodation.dto.response.CoordinateResponse;
 import com.dmz.airdnd.accommodation.dto.response.GeocodeResponse;
 import com.dmz.airdnd.common.exception.ErrorCode;
 import com.dmz.airdnd.common.exception.GeocodingException;
@@ -25,7 +26,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
 	private String apiKey;
 
 	@Override
-	public double[] lookupCoordinates(String baseAddress) {
+	public CoordinateResponse lookupCoordinates(String baseAddress) {
 		String coordinateRequestUri = generateUri(baseAddress);
 		GeocodeResponse geocodeResponse;
 
@@ -41,7 +42,8 @@ public class GoogleGeocodingClient implements GeocodingClient {
 		}
 
 		GeocodeResponse.Location location = geocodeResponse.getResults().get(0).getGeometry().getLocation();
-		return new double[] {location.getLatitude(), location.getLongitude()};
+
+		return new CoordinateResponse(location.getLatitude(), location.getLongitude());
 	}
 
 	private String generateUri(String baseAddress) {

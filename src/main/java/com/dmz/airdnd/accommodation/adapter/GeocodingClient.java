@@ -1,6 +1,8 @@
 package com.dmz.airdnd.accommodation.adapter;
 
+import com.dmz.airdnd.accommodation.dto.response.CoordinateResponse;
+
 public interface GeocodingClient {
 
-	double[] lookupCoordinates(String baseAddress);
+	CoordinateResponse lookupCoordinates(String baseAddress);
 }
