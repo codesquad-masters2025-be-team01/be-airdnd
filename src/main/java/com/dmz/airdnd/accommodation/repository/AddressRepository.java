@@ -1,4 +1,4 @@
-package com.dmz.airdnd.accommodation.domain.repository;
+package com.dmz.airdnd.accommodation.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
