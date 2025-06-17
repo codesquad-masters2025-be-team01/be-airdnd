@@ -1,7 +1,7 @@
 package com.dmz.airdnd.reservation.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.user.domain.User;
@@ -37,10 +37,10 @@ public class Reservation {
 	private Accommodation accommodation;
 
 	@Column(nullable = false)
-	private Date checkInDate;
+	private LocalDate checkInDate;
 
 	@Column(nullable = false)
-	private Date checkOutDate;
+	private LocalDate checkOutDate;
 
 	@Column(nullable = false)
 	private int numberOfGuests;
