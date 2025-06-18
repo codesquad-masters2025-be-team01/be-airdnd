@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.service.AccommodationService;
+import com.dmz.airdnd.common.aop.RoleCheck;
 import com.dmz.airdnd.common.auth.UserContext;
 import com.dmz.airdnd.common.auth.dto.UserInfo;
 import com.dmz.airdnd.common.exception.DuplicateReservationException;
@@ -15,6 +16,7 @@ import com.dmz.airdnd.reservation.dto.request.ReservationRequest;
 import com.dmz.airdnd.reservation.dto.response.ReservationResponse;
 import com.dmz.airdnd.reservation.mapper.ReservationMapper;
 import com.dmz.airdnd.reservation.repository.ReservationRepository;
+import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.service.UserService;
 
@@ -33,6 +35,7 @@ public class ReservationService {
 	private final UserService userService;
 
 	@Transactional
+	@RoleCheck(Role.USER)
 	public ReservationResponse booking(ReservationRequest reservationRequest) {
 		Accommodation accommodation = accommodationService.getAccommodationById(
 			reservationRequest.getAccommodationId());
