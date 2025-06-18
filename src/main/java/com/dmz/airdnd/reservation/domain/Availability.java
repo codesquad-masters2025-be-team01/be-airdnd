@@ -11,12 +11,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "availability", uniqueConstraints = {
+	@UniqueConstraint(columnNames = {"accommodation_id", "date"})
+})
 @Getter
 @Builder
 @AllArgsConstructor
@@ -26,7 +31,7 @@ public class Availability {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private LocalDate date;
 
 	@ManyToOne(optional = false)
