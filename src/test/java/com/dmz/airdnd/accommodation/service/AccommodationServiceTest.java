@@ -1,5 +1,6 @@
 package com.dmz.airdnd.accommodation.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.dto.request.AccommodationSearchRequest;
+import com.dmz.airdnd.accommodation.dto.response.AccommodationPageResponse;
 import com.dmz.airdnd.accommodation.repository.AccommodationRepository;
 import com.dmz.airdnd.fixture.TestAccommodationFactory;
 
@@ -66,6 +68,6 @@ class AccommodationServiceTest {
 		assertThat(response.getPageSize()).isEqualTo(3);
 		assertThat(response.getTotalPages()).isEqualTo(1);
 		assertThat(response.getTotalElements()).isEqualTo(1);
-		assertThat(response.getAccommodations().get(0).getName()).isEqualTo(accommodation.getName());
+		assertThat(response.getAccommodationResponses().get(0).getName()).isEqualTo(accommodation.getName());
 	}
 }
