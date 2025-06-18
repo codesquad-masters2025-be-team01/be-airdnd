@@ -39,6 +39,25 @@ public class TestAccommodationFactory {
 			.build();
 	}
 
+	public static Accommodation createAccommodation1() {
+		return Accommodation.builder()
+			.address(Address.builder()
+				.country("KR")
+				.baseAddress("서울특별시 강남구")
+				.location(GeometryFactory.createPoint(37.4966645, 127.0629804))
+				.build())
+			.name("서울 시내 모던룸1")
+			.description("조용하고 따뜻한 다락방")
+			.pricePerDay(55000)
+			.currency("KRW")
+			.maxGuests(2)
+			.bedCount(1)
+			.bedroomCount(1)
+			.bathroomCount(1)
+			.createdAt(now())
+			.build();
+	}
+
 	public static List<Accommodation> createTestAccommodationList() {
 		return List.of(
 			Accommodation.builder()
