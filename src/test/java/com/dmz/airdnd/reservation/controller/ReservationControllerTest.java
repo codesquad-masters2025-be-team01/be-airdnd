@@ -55,7 +55,7 @@ class ReservationControllerTest {
 		ReservationResponse reservationResponse = TestReservationFactory.createReservationResponse(accommodation);
 		when(reservationService.booking(any())).thenReturn(reservationResponse);
 
-		//when
+		//when + then
 		mockMvc.perform(post("/api/booking")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + token)
@@ -70,7 +70,7 @@ class ReservationControllerTest {
 			.andExpect(jsonPath("$.data.currency").value("KRW"))
 			.andExpect(jsonPath("$.error").isEmpty());
 
-		//then
+		//service 호출 확인
 		verify(reservationService).booking(any(ReservationRequest.class));
 	}
 
