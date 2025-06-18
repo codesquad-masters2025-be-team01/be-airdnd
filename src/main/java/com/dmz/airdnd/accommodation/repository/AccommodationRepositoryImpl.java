@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
-import com.dmz.airdnd.accommodation.dto.request.AccommodationSearchRequest;
+import com.dmz.airdnd.accommodation.dto.FilterCondition;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ public class AccommodationRepositoryImpl implements AccommodationRepositoryCusto
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<Accommodation> findFilteredAccommodations(Pageable pageable, AccommodationSearchRequest request) {
+	public Page<Accommodation> findFilteredAccommodations(Pageable pageable, FilterCondition filterCondition) {
 		// Implement the logic to filter accommodations based on the request
 		// This method will use Querydsl or any other criteria API to build the query
 		// and return a paginated result of accommodations.
