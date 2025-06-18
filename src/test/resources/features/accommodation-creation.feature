@@ -5,7 +5,7 @@ Feature: 호스트의 숙소 생성
     And 저장소에 동일한 name 을 가진 숙소가 존재하지 않는다.
     When 호스트가 숙소생성 API를 호출했을 때
     Then 응답 상태로 201 Created를 받는다.
-    And 응답 본문은 success는 true이고 바디에 생성된 숙소의 id가 포함되어야 한다.
+    And 응답 본문은 success는 true이고 바디에 생성된 숙소의 정보가 포함되어야 한다.
 
 #  Scenario: 비로그인 사용자가 숙소 생성 요청을 하면 401 Unauthorized를 반환한다
 #    Given 로그인되지 않은 사용자가
@@ -18,14 +18,3 @@ Feature: 호스트의 숙소 생성
 #    Then 응답 상태 코드는 400 Bad Request여야 한다
 #    And 오류 메시지에 "name은 필수 입력 항목입니다."가 포함되어야 한다
 #
-#  Scenario: pricePerDay가 0 이하이면 400 Bad Request를 반환한다
-#    Given pricePerDay가 -1인 숙소 정보가 주어졌을 때
-#    When POST "/api/accommodations" 요청을 보내면
-#    Then 응답 상태 코드는 400 Bad Request여야 한다
-#    And 오류 메시지에 "pricePerDay는 1 이상이어야 합니다."가 포함되어야 한다
-#
-#  Scenario: maxGuests가 너무 크면 400 Bad Request를 반환한다
-#    Given maxGuests가 1000인 숙소 정보가 주어졌을 때
-#    When POST "/api/accommodations" 요청을 보내면
-#    Then 응답 상태 코드는 400 Bad Request여야 한다
-#    And 오류 메시지에 "maxGuests는 1~(최대수용인원) 사이여야 합니다."가 포함되어야 한다

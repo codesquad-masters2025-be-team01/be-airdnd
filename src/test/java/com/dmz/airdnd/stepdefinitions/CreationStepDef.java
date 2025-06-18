@@ -1,5 +1,6 @@
 package com.dmz.airdnd.stepdefinitions;
 
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,7 +53,7 @@ public class CreationStepDef extends AbstractContainerBase {
 	@Given("유효한 숙소 등록 정보가 준비되어 있다.")
 	public void 유효한_숙소_등록_정보가_준비되어_있다() {
 		request = new AccommodationCreateRequest(
-			"accommo123", null, 50000L, "KRW", 2, 1, 1, 1, 12345L
+			"accommodation123", null, 50000L, "KRW", 2, 1, 1, 1, 12345L
 		);
 	}
 
@@ -74,6 +75,16 @@ public class CreationStepDef extends AbstractContainerBase {
 		resultActions.andExpect(status().isCreated());
 	}
 
-	@Then("응답 바디에 생성된 숙소의 id가 포함되어야 한다.")
-
+	@Then("응답 본문은 success는 true이고 바디에 생성된 숙소의 정보가 포함되어야 한다.")
+	public void 응답_본문은_success는_true이고_바디에_생성된_숙소의_정보가_포함되어야_한다() throws Exception {
+		resultActions
+			.andExpect(jsonPath("$.success").value(true))
+			.andExpect(jsonPath("$.data.id").isNumber())
+			.andExpect(jsonPath("$.data.name").value(request.getName()))
+			.andExpect(jsonPath("$.data.pricePerDay").value(request.getPricePerDay()))
+			.andExpect(jsonPath("$.data.currency").value(request.getCurrency()))
+			.andExpect(jsonPath("$.data.maxGuests").value(request.getMaxGuests()))
+			.andExpect(jsonPath("$.data.createdAt").exists())
+			.andExpect(jsonPath("$.error").value(nullValue()));
+	}
 }

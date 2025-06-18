@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.dmz.airdnd.accommodation.dto.response.CoordinateResponse;
+import com.dmz.airdnd.accommodation.dto.response.CoordinateDto;
 import com.dmz.airdnd.accommodation.dto.response.GeocodeResponse;
 import com.dmz.airdnd.common.exception.GeocodingException;
 
@@ -55,7 +55,7 @@ class GoogleGeocodingClientTest {
 			.thenReturn(mockResponse);
 
 		// when
-		CoordinateResponse coordinates = geocodingService.lookupCoordinates(BASE_ADDRESS);
+		CoordinateDto coordinates = geocodingService.lookupCoordinates(BASE_ADDRESS);
 
 		// then
 		assertThat(location.getLatitude()).isEqualTo(coordinates.latitude());
