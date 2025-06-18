@@ -7,6 +7,7 @@ import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.reservation.domain.Reservation;
 import com.dmz.airdnd.reservation.domain.ReservationStatus;
 import com.dmz.airdnd.reservation.dto.request.ReservationRequest;
+import com.dmz.airdnd.reservation.dto.response.ReservationResponse;
 import com.dmz.airdnd.user.domain.User;
 
 public class TestReservationFactory {
@@ -16,7 +17,7 @@ public class TestReservationFactory {
 			.accommodation(accommodation)
 			.checkInDate(LocalDate.of(2025, 7, 21))
 			.checkOutDate(LocalDate.of(2025, 7, 23))
-			.numberOfGuests(10)
+			.numberOfGuests(4)
 			.totalPrice(200000)
 			.status(ReservationStatus.PENDING)
 			.timezone("Asia/Seoul")
@@ -32,6 +33,17 @@ public class TestReservationFactory {
 			.checkOutDate(LocalDate.of(2025, 7, 23))
 			.numberOfGuests(4)
 			.timezone("Asia/Seoul")
+			.build();
+	}
+
+	public static ReservationResponse createReservationResponse(Accommodation accommodation) {
+		return ReservationResponse.builder()
+			.name(accommodation.getName())
+			.checkInDate(LocalDate.of(2025, 7, 21))
+			.checkOutDate(LocalDate.of(2025, 7, 23))
+			.numberOfGuests(4)
+			.totalPrice(200000L)
+			.currency(accommodation.getCurrency())
 			.build();
 	}
 }
