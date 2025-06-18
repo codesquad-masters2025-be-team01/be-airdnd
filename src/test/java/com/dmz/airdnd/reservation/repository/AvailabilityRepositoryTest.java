@@ -1,6 +1,9 @@
 package com.dmz.airdnd.reservation.repository;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.util.List;
 
@@ -9,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.accommodation.domain.Accommodation;
@@ -63,6 +67,7 @@ class AvailabilityRepositoryTest extends AbstractContainerBase {
 			reservation);
 		//when
 		availabilityRepository.saveAll(availabilities);
+
 		//then
 		List<Availability> newAvailabilities = availabilityRepository.findAll();
 		assertThat(newAvailabilities)
@@ -71,5 +76,22 @@ class AvailabilityRepositoryTest extends AbstractContainerBase {
 				reservation.getCheckInDate(),
 				reservation.getCheckOutDate().minusDays(1)
 			);
+	}
+
+	@Test
+	@DisplayName("예약 기간 동안 같은 날짜에 대한 Availability 중복 저장 시 예외가 발생한다")
+	void fail_saveAllAvailability() {
+		//given
+		List<Availability> fistSave = TestAvailabilityFactory.createTestAvailabilities(accommodation,
+			reservation);
+		List<Availability> secondSave = TestAvailabilityFactory.createTestAvailabilities(accommodation,
+			reservation);
+
+		//when: 첫 번째 저장은 정상적으로 수행
+		availabilityRepository.saveAll(fistSave);
+
+		//then: 두 번째 저장은 같은 날짜 데이터 중복으로 예외 발생
+		assertThatThrownBy(() -> availabilityRepository.saveAll(secondSave))
+			.isInstanceOf(DataIntegrityViolationException.class);
 	}
 }
