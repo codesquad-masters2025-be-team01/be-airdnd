@@ -28,7 +28,9 @@ public class ReservationController {
 	@RoleCheck(Role.USER)
 	public ResponseEntity<ApiResponse<ReservationResponse>> booking(
 		@Valid @RequestBody ReservationRequest reservationRequest) {
+		ReservationResponse response = reservationService.booking(reservationRequest);
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(ApiResponse.success(reservationService.booking(reservationRequest)));
+			.body(ApiResponse.success(response));
 	}
 }
+
