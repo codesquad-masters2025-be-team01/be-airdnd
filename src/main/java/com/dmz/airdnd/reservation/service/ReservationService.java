@@ -46,7 +46,7 @@ public class ReservationService {
 		Reservation saved = reservationRepository.save(reservation);
 
 		try {
-			availabilityService.createAvailability(accommodation, saved);
+			availabilityService.saveReservationDates(accommodation, saved);
 		} catch (DataIntegrityViolationException e) {
 			throw new DuplicateReservationException(ErrorCode.DUPLICATE_RESERVATION);
 		}

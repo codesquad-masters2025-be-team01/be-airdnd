@@ -71,7 +71,7 @@ class ReservationServiceTest {
 		when(accommodationService.getAccommodationById(accommodation.getId())).thenReturn(accommodation);
 		when(userService.getUserFindById(guest.getId())).thenReturn(guest);
 		when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
-		doNothing().when(availabilityService).createAvailability(accommodation, reservation);
+		doNothing().when(availabilityService).saveReservationDates(accommodation, reservation);
 
 		//when
 		ReservationResponse reservationResponse = reservationService.booking(reservationRequest);
@@ -93,7 +93,7 @@ class ReservationServiceTest {
 		when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 		doThrow(new DuplicateReservationException(ErrorCode.DUPLICATE_RESERVATION))
 			.when(availabilityService)
-			.createAvailability(accommodation, reservation);
+			.saveReservationDates(accommodation, reservation);
 
 		// when & then
 		assertThatThrownBy(() -> reservationService.booking(reservationRequest))

@@ -28,7 +28,7 @@ class AvailabilityServiceTest {
 
 	@Test
 	@DisplayName("예약 정보를 기반으로 Availability 목록을 저장한다")
-	void success_createAvailability() {
+	void success_saveReservationDates() {
 		//given
 		Accommodation accommodation = Mockito.mock(Accommodation.class);
 		Reservation reservation = Mockito.mock(Reservation.class);
@@ -37,7 +37,7 @@ class AvailabilityServiceTest {
 		when(availabilityRepository.saveAll(anyList())).thenReturn(List.of());
 
 		//when
-		availabilityService.createAvailability(accommodation, reservation);
+		availabilityService.saveReservationDates(accommodation, reservation);
 
 		//then
 		verify(availabilityRepository).saveAll(anyList());

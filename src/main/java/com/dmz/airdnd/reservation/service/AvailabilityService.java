@@ -19,21 +19,21 @@ public class AvailabilityService {
 
 	private final AvailabilityRepository availabilityRepository;
 
-	public void createAvailability(Accommodation accommodation, Reservation reservation) {
-		List<Availability> availabilities = generateAvailabilities(accommodation, reservation);
-		availabilityRepository.saveAll(availabilities);
+	public void saveReservationDates(Accommodation accommodation, Reservation reservation) {
+		List<Availability> reservationDates = buildReservationDates(accommodation, reservation);
+		availabilityRepository.saveAll(reservationDates);
 	}
 
-	private List<Availability> generateAvailabilities(Accommodation accommodation, Reservation reservation) {
-		List<Availability> availabilities = new ArrayList<>();
+	private List<Availability> buildReservationDates(Accommodation accommodation, Reservation reservation) {
+		List<Availability> dates = new ArrayList<>();
 		for (LocalDate date = reservation.getCheckInDate(); date.isBefore(
 			reservation.getCheckOutDate()); date = date.plusDays(1)) {
-			availabilities.add(Availability.builder()
+			dates.add(Availability.builder()
 				.accommodation(accommodation)
 				.reservation(reservation)
 				.date(date)
 				.build());
 		}
-		return availabilities;
+		return dates;
 	}
 }
