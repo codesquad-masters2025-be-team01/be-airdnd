@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,6 +22,9 @@ import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.dto.FilterCondition;
 import com.dmz.airdnd.common.config.QuerydslConfig;
 import com.dmz.airdnd.fixture.TestAccommodationFactory;
+import com.dmz.airdnd.fixture.TestAvailabilityFactory;
+import com.dmz.airdnd.reservation.domain.Availability;
+import com.dmz.airdnd.reservation.repository.AvailabilityRepository;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)
@@ -30,6 +32,9 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 
 	@Autowired
 	private AccommodationRepository accommodationRepository;
+
+	@Autowired
+	private AvailabilityRepository availabilityRepository;
 
 	@ParameterizedTest
 	@MethodSource("filterConditionsProvider")
@@ -39,6 +44,8 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 		// given
 		List<Accommodation> accommodationList = TestAccommodationFactory.createTestAccommodationList();
 		accommodationRepository.saveAll(accommodationList);
+		List<Availability> availabilityList = TestAvailabilityFactory.createTestAvailabilities(accommodationList);
+		availabilityRepository.saveAll(availabilityList);
 
 		// when
 		Page<Accommodation> accommodations = accommodationRepository.findFilteredAccommodations(pageable,
@@ -102,7 +109,6 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 				3,
 				List.of("서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
 			),
-			// 위치 + 가격 + 게스트 수 + 날짜 필터링
 			Arguments.of(
 				FilterCondition.builder()
 					.longitude(129.1201036)
@@ -115,6 +121,37 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 				PageRequest.of(0, 3),
 				1,
 				List.of("부산 광안리 룸")
+			),
+			// 위치 + 날짜 필터링
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.requestedDates(List.of(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 1, 2)))
+					.build(),
+				PageRequest.of(0, 3),
+				3,
+				List.of("서울 시내 모던룸3", "서울 시내 모던룸6", "서울 시내 모던룸5")
+			),
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.requestedDates(List.of(LocalDate.of(2026, 1, 3), LocalDate.of(2026, 1, 4)))
+					.build(),
+				PageRequest.of(0, 3),
+				3,
+				List.of("서울 시내 모던룸6", "서울 시내 모던룸2", "서울 시내 모던룸5")
+			),
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.requestedDates(List.of(LocalDate.of(2026, 1, 1)))
+					.build(),
+				PageRequest.of(0, 10),
+				4,
+				List.of("서울 시내 모던룸3", "서울 시내 모던룸6", "서울 시내 모던룸5", "서울 시내 모던룸4")
 			)
 		);
 	}
