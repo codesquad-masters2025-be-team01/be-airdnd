@@ -21,12 +21,12 @@ import com.dmz.airdnd.common.exception.InvalidFilterConditionException;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.stereotype.Service;
-
 import com.dmz.airdnd.accommodation.domain.Address;
 import com.dmz.airdnd.accommodation.dto.request.AccommodationCreateRequest;
 import com.dmz.airdnd.accommodation.dto.response.AccommodationCreateResponse;
 import com.dmz.airdnd.accommodation.mapper.AccommodationMapper;
+import com.dmz.airdnd.common.aop.RoleCheck;
+import com.dmz.airdnd.user.domain.Role;
 
 @Service
 @RequiredArgsConstructor
@@ -36,13 +36,14 @@ public class AccommodationService {
 
 	private final AddressService addressService;
 
+	@RoleCheck(Role.HOST)
 	public AccommodationCreateResponse createAccommodation(AccommodationCreateRequest request) {
 		Address address = addressService.getOrCreateByFullAddress(request.getCountry(), request.getBaseAddress(),
 			request.getDetailedAddress());
 
 		Accommodation newAccommodation = AccommodationMapper.toEntity(request, address);
 		accommodationRepository.save(newAccommodation);
-		return AccommodationCreateResponse.fromEntity(newAccommodation);
+		return AccommodationMapper.fromEntity(newAccommodation);
 	}
 
 	@Transactional(readOnly = true)
@@ -97,4 +98,3 @@ public class AccommodationService {
 			.build();
 	}
 }
-
