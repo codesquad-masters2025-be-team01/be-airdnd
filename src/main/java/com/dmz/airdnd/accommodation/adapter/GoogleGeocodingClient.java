@@ -24,6 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 public class GoogleGeocodingClient implements GeocodingClient {
 
 	private final String GOOGLE_GEOCODING_URL = "https://maps.googleapis.com/maps/api/geocode/json";
+	private final String STATUS_OK = "OK";
+	private final String URI_ADDRESS = "address";
+	private final String URI_KEY = "key";
+	private final String URI_LANGUAGE = "language";
+	private final String LANGUAGE_VALUE_KO = "ko";
+
 	private final RestTemplate restTemplate;
 
 	@Value("${GOOGLE_MAPS_API_KEY}")
@@ -40,7 +46,7 @@ public class GoogleGeocodingClient implements GeocodingClient {
 			throw new GeocodingException(ErrorCode.GEOCODING_FAILED);
 		}
 
-		if (geocodeResponse == null || !geocodeResponse.getStatus().equals("OK") || geocodeResponse.getResults()
+		if (geocodeResponse == null || !geocodeResponse.getStatus().equals(STATUS_OK) || geocodeResponse.getResults()
 			.isEmpty()) {
 			log.warn("유효하지 않은 GeocodeResponse: {}", geocodeResponse);
 			throw new GeocodingException(ErrorCode.GEOCODING_FAILED);
@@ -54,9 +60,9 @@ public class GoogleGeocodingClient implements GeocodingClient {
 	private URI generateUri(String baseAddress) {
 		return UriComponentsBuilder
 			.fromHttpUrl(GOOGLE_GEOCODING_URL)
-			.queryParam("address", baseAddress)
-			.queryParam("key", apiKey)
-			.queryParam("language", "ko")
+			.queryParam(URI_ADDRESS, baseAddress)
+			.queryParam(URI_KEY, apiKey)
+			.queryParam(URI_LANGUAGE, LANGUAGE_VALUE_KO)
 			.encode(StandardCharsets.UTF_8)
 			.build()
 			.toUri();
