@@ -3,6 +3,8 @@ package com.dmz.airdnd.reservation.service;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.domain.Address;
-import com.dmz.airdnd.accommodation.service.AccommodationService;
+import com.dmz.airdnd.accommodation.repository.AccommodationRepository;
 import com.dmz.airdnd.common.auth.UserContext;
 import com.dmz.airdnd.common.auth.dto.UserInfo;
 import com.dmz.airdnd.common.exception.DuplicateReservationException;
@@ -28,7 +30,7 @@ import com.dmz.airdnd.reservation.dto.response.ReservationResponse;
 import com.dmz.airdnd.reservation.repository.ReservationRepository;
 import com.dmz.airdnd.user.domain.Role;
 import com.dmz.airdnd.user.domain.User;
-import com.dmz.airdnd.user.service.UserService;
+import com.dmz.airdnd.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -40,13 +42,13 @@ class ReservationServiceTest {
 	private ReservationRepository reservationRepository;
 
 	@Mock
-	private AccommodationService accommodationService;
+	private AccommodationRepository accommodationRepository;
+
+	@Mock
+	private UserRepository userRepository;
 
 	@Mock
 	private AvailabilityService availabilityService;
-
-	@Mock
-	private UserService userService;
 
 	private Reservation reservation;
 
@@ -68,8 +70,8 @@ class ReservationServiceTest {
 	void success_booking() {
 		//given
 		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest();
-		when(accommodationService.getAccommodationById(accommodation.getId())).thenReturn(accommodation);
-		when(userService.getUserFindById(guest.getId())).thenReturn(guest);
+		when(accommodationRepository.findById(accommodation.getId())).thenReturn(Optional.of(accommodation));
+		when(userRepository.findById(guest.getId())).thenReturn(Optional.of(guest));
 		when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 		doNothing().when(availabilityService).saveReservationDates(accommodation, reservation);
 
@@ -88,8 +90,8 @@ class ReservationServiceTest {
 	void fail_booking() {
 		// given
 		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest();
-		when(accommodationService.getAccommodationById(accommodation.getId())).thenReturn(accommodation);
-		when(userService.getUserFindById(guest.getId())).thenReturn(guest);
+		when(accommodationRepository.findById(accommodation.getId())).thenReturn(Optional.of(accommodation));
+		when(userRepository.findById(guest.getId())).thenReturn(Optional.of(guest));
 		when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 		doThrow(new DuplicateReservationException(ErrorCode.DUPLICATE_RESERVATION))
 			.when(availabilityService)
