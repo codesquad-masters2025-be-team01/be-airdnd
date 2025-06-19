@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.reservation.domain.Availability;
@@ -19,6 +20,7 @@ public class AvailabilityService {
 
 	private final AvailabilityRepository availabilityRepository;
 
+	@Transactional
 	public void saveReservationDates(Accommodation accommodation, Reservation reservation) {
 		List<Availability> reservationDates = buildReservationDates(accommodation, reservation);
 		availabilityRepository.saveAll(reservationDates);
