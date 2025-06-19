@@ -24,9 +24,9 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final com.dmz.airdnd.accommodation.domain.QAccommodation accommodation;
 
-    public final DatePath<java.sql.Date> checkInDate = createDate("checkInDate", java.sql.Date.class);
+    public final DatePath<java.time.LocalDate> checkInDate = createDate("checkInDate", java.time.LocalDate.class);
 
-    public final DatePath<java.sql.Date> checkOutDate = createDate("checkOutDate", java.sql.Date.class);
+    public final DatePath<java.time.LocalDate> checkOutDate = createDate("checkOutDate", java.time.LocalDate.class);
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
