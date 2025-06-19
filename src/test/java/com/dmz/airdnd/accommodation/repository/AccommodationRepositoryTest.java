@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.dmz.airdnd.AbstractContainerBase;
 import com.dmz.airdnd.accommodation.domain.Accommodation;
@@ -33,21 +34,24 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 	@ParameterizedTest
 	@MethodSource("filterConditionsProvider")
 	@DisplayName("필터링 조건에 따라 숙소를 조회할 수 있다.")
-	void success_findFilteredAccommodations(FilterCondition filterCondition, int expectedSize,
+	void success_findFilteredAccommodations(FilterCondition filterCondition, Pageable pageable, int expectedSize,
 		List<String> expectedNames) {
 		// given
 		List<Accommodation> accommodationList = TestAccommodationFactory.createTestAccommodationList();
 		accommodationRepository.saveAll(accommodationList);
 
 		// when
-		Page<Accommodation> accommodations = accommodationRepository.findFilteredAccommodations(PageRequest.of(0, 3),
+		Page<Accommodation> accommodations = accommodationRepository.findFilteredAccommodations(pageable,
 			filterCondition);
 
 		// then
-		for (Accommodation accommodation : accommodations.getContent()) {
-			System.out.println(accommodation.getName());
-		}
+		List<String> resultNames = accommodations.getContent()
+			.stream()
+			.map(Accommodation::getName)
+			.toList();
+
 		assertThat(accommodations.getTotalElements()).isEqualTo(expectedSize);
+		assertThat(resultNames).containsExactlyInAnyOrderElementsOf(expectedNames);
 	}
 
 	static Stream<Arguments> filterConditionsProvider() {
@@ -59,9 +63,19 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.latitude(37.4966645)
 					.requestedDates(List.of())
 					.build(),
+				PageRequest.of(0, 3),
 				6,
-				List.of("서울 시내 모던룸1", "서울 시내 모던룸2", "서울 시내 모던룸3",
-					"서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
+				List.of("서울 시내 모던룸1", "서울 시내 모던룸2", "서울 시내 모던룸3")
+			),
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.requestedDates(List.of())
+					.build(),
+				PageRequest.of(1, 3),
+				6,
+				List.of("서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
 			),
 			// 위치 + 가격 필터링
 			Arguments.of(
@@ -72,6 +86,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.maxPrice(60000)
 					.requestedDates(List.of())
 					.build(),
+				PageRequest.of(0, 3),
 				1,
 				List.of("서울 시내 모던룸1")
 			),
@@ -83,8 +98,9 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.maxGuests(4)
 					.requestedDates(List.of())
 					.build(),
+				PageRequest.of(0, 3),
 				3,
-				List.of("서울 시내 모던룸 4", "서울 시내 모던룸5", "서울 시내 모던룸6")
+				List.of("서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
 			),
 			// 위치 + 가격 + 게스트 수 + 날짜 필터링
 			Arguments.of(
@@ -96,6 +112,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.maxGuests(2)
 					.requestedDates(List.of())
 					.build(),
+				PageRequest.of(0, 3),
 				1,
 				List.of("부산 광안리 룸")
 			)
