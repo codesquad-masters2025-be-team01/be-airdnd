@@ -50,7 +50,7 @@ class AccommodationServiceTest {
 			.pageSize(3)
 			.build();
 
-		Pageable pageable = PageRequest.of(0, 3);
+		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getPageSize());
 
 		Page<Accommodation> accommodationPage = new PageImpl<>(
 			List.of(accommodation),

@@ -30,7 +30,7 @@ public class AccommodationService {
 	@Transactional(readOnly = true)
 	public AccommodationPageResponse findFilteredAccommodations(AccommodationSearchRequest request) {
 		FilterCondition filterCondition = toCondition(request);
-		Pageable pageable = PageRequest.of(request.getPage(), request.getPageSize());
+		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getPageSize());
 
 		Page<Accommodation> accommodationPage = accommodationRepository.findFilteredAccommodations(pageable,
 			filterCondition);
