@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,28 +72,27 @@ class AvailabilityRepositoryTest extends AbstractContainerBase {
 
 		//then
 		List<Availability> newAvailabilities = availabilityRepository.findAll();
-		assertThat(newAvailabilities)
-			.extracting(Availability::getDate)
-			.containsExactlyInAnyOrder(
-				reservation.getCheckInDate(),
-				reservation.getCheckOutDate().minusDays(1)
-			);
+
+		List<LocalDate> expectedDates = reservation.getCheckInDate()
+			.datesUntil(reservation.getCheckOutDate()) // 체크아웃 전날까지 반복
+			.collect(Collectors.toList());
+
+		assertThat(newAvailabilities).extracting(Availability::getDate)
+			.containsExactlyInAnyOrderElementsOf(expectedDates);
 	}
 
 	@Test
 	@DisplayName("예약 기간 동안 같은 날짜에 대한 Availability 중복 저장 시 예외가 발생한다")
 	void fail_saveAllAvailability() {
 		//given
-		List<Availability> fistSave = TestAvailabilityFactory.createTestAvailabilities(accommodation,
-			reservation);
-		List<Availability> secondSave = TestAvailabilityFactory.createTestAvailabilities(accommodation,
-			reservation);
+		List<Availability> fistSave = TestAvailabilityFactory.createTestAvailabilities(accommodation, reservation);
+		List<Availability> secondSave = TestAvailabilityFactory.createTestAvailabilities(accommodation, reservation);
 
 		//when: 첫 번째 저장은 정상적으로 수행
 		availabilityRepository.saveAll(fistSave);
 
 		//then: 두 번째 저장은 같은 날짜 데이터 중복으로 예외 발생
-		assertThatThrownBy(() -> availabilityRepository.saveAll(secondSave))
-			.isInstanceOf(DataIntegrityViolationException.class);
+		assertThatThrownBy(() -> availabilityRepository.saveAll(secondSave)).isInstanceOf(
+			DataIntegrityViolationException.class);
 	}
 }
