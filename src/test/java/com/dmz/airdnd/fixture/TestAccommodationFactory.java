@@ -39,13 +39,14 @@ public class TestAccommodationFactory {
 			.build();
 	}
 
-	public static Accommodation createAccommodation1() {
+	public static Accommodation createAccommodation1() { // TODO : 숙소에 라벨 추가하기, 라벨 enum으로 관리
 		return Accommodation.builder()
 			.address(Address.builder()
 				.country("KR")
 				.baseAddress("서울특별시 강남구")
 				.location(GeometryFactory.createPoint(37.4966645, 127.0629804))
 				.build())
+			.labels(List.of())
 			.name("서울 시내 모던룸1")
 			.description("조용하고 따뜻한 다락방")
 			.pricePerDay(55000)
