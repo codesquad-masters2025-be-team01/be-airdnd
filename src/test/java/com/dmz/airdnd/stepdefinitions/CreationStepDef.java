@@ -52,9 +52,19 @@ public class CreationStepDef extends AbstractContainerBase {
 
 	@Given("유효한 숙소 등록 정보가 준비되어 있다.")
 	public void 유효한_숙소_등록_정보가_준비되어_있다() {
-		request = new AccommodationCreateRequest(
-			"accommodation123", null, 50000L, "KRW", 2, 1, 1, 1, 12345L
-		);
+		request = AccommodationCreateRequest.builder()
+			.name("accommodation123")
+			.description(null)
+			.pricePerDay(50000L)
+			.currency("KRW")
+			.maxGuests(2)
+			.bedCount(1)
+			.bedroomCount(1)
+			.bathroomCount(1)
+			.country("대한민국")
+			.baseAddress("서울특별시 강남구 강남대로62길 23")
+			.detailedAddress("")
+			.build();
 	}
 
 	@Given("저장소에 동일한 name 을 가진 숙소가 존재하지 않는다.")
