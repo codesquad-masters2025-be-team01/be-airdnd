@@ -42,21 +42,21 @@ class ReservationControllerTest {
 	private JwtUtil jwtUtil;
 
 	@Test
-	@DisplayName("POST /api/booking 성공 시 201 반환하고 서비스 호출")
+	@DisplayName("POST /api/accommodation/{id}/reservation 성공 시 201 반환하고 서비스 호출")
 	void success_booking() throws Exception {
 		//given
 		String token = generateToken();
 		Accommodation accommodation = TestAccommodationFactory
 			.createTestAccommodation(1L, TestAddressFactory.createTestAddress(1L));
 
-		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest(accommodation);
+		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest();
 		String json = objectMapper.writeValueAsString(reservationRequest);
 
 		ReservationResponse reservationResponse = TestReservationFactory.createReservationResponse(accommodation);
-		when(reservationService.booking(any())).thenReturn(reservationResponse);
+		when(reservationService.booking(any(), any())).thenReturn(reservationResponse);
 
 		//when + then
-		mockMvc.perform(post("/api/booking")
+		mockMvc.perform(post("/api/accommodations/1/reservations")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + token)
 				.content(json))
@@ -71,7 +71,7 @@ class ReservationControllerTest {
 			.andExpect(jsonPath("$.error").isEmpty());
 
 		//service 호출 확인
-		verify(reservationService).booking(any(ReservationRequest.class));
+		verify(reservationService).booking(any(), any(ReservationRequest.class));
 	}
 
 	private String generateToken() {

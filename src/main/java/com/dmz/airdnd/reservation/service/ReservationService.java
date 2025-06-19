@@ -36,22 +36,20 @@ public class ReservationService {
 
 	@Transactional
 	@RoleCheck(Role.USER)
-	public ReservationResponse booking(ReservationRequest reservationRequest) {
-		Accommodation accommodation = accommodationService.getAccommodationById(
-			reservationRequest.getAccommodationId());
+	public ReservationResponse booking(Long accommodationId, ReservationRequest reservationRequest) {
+		Accommodation accommodation = accommodationService.getAccommodationById(accommodationId);
 
 		User guest = getCurrentUser();
 
 		Reservation reservation = ReservationMapper.toEntity(reservationRequest, guest, accommodation);
-		Reservation saved = reservationRepository.save(reservation);
 
 		try {
+			Reservation saved = reservationRepository.save(reservation);
 			availabilityService.saveReservationDates(accommodation, saved);
+			return ReservationMapper.toResponse(saved, accommodation);
 		} catch (DataIntegrityViolationException e) {
 			throw new DuplicateReservationException(ErrorCode.DUPLICATE_RESERVATION);
 		}
-
-		return ReservationMapper.toResponse(saved, accommodation);
 	}
 
 	private User getCurrentUser() {

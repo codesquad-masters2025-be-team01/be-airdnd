@@ -67,14 +67,14 @@ class ReservationServiceTest {
 	@DisplayName("선택한 날짜에 예약이 없으면 예약이 성공하고, ReservationResponse를 반환한다")
 	void success_booking() {
 		//given
-		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest(accommodation);
+		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest();
 		when(accommodationService.getAccommodationById(accommodation.getId())).thenReturn(accommodation);
 		when(userService.getUserFindById(guest.getId())).thenReturn(guest);
 		when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 		doNothing().when(availabilityService).saveReservationDates(accommodation, reservation);
 
 		//when
-		ReservationResponse reservationResponse = reservationService.booking(reservationRequest);
+		ReservationResponse reservationResponse = reservationService.booking(accommodation.getId(), reservationRequest);
 
 		//then
 		assertThat(reservationResponse.getCheckInDate()).isEqualTo(reservationRequest.getCheckInDate());
@@ -87,7 +87,7 @@ class ReservationServiceTest {
 	@DisplayName("동일한 날짜에 이미 예약이 있을 경우 예약에 실패하고, DuplicateReservationException 예외가 발생한다.")
 	void fail_booking() {
 		// given
-		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest(accommodation);
+		ReservationRequest reservationRequest = TestReservationFactory.createReservationRequest();
 		when(accommodationService.getAccommodationById(accommodation.getId())).thenReturn(accommodation);
 		when(userService.getUserFindById(guest.getId())).thenReturn(guest);
 		when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
@@ -96,7 +96,7 @@ class ReservationServiceTest {
 			.saveReservationDates(accommodation, reservation);
 
 		// when & then
-		assertThatThrownBy(() -> reservationService.booking(reservationRequest))
+		assertThatThrownBy(() -> reservationService.booking(accommodation.getId(), reservationRequest))
 			.isInstanceOf(DuplicateReservationException.class)
 			.hasMessage("이미 존재하는 예약입니다.");
 	}
