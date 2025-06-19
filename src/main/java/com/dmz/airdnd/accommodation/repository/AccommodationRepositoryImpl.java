@@ -76,7 +76,13 @@ public class AccommodationRepositoryImpl implements AccommodationRepositoryCusto
 						availability.accommodation.eq(accommodation),
 						availability.date.in(requestedDates)
 					)
-					.notExists()
+					.notExists(),
+				Expressions.booleanTemplate(
+					"ST_Distance_Sphere({0}, {1}) <= {2}",
+					accommodation.address.location,
+					Expressions.constant(userLocation),
+					RADIUS_METERS
+				)
 			)
 			.fetchOne();
 
