@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -26,25 +30,15 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 	@Autowired
 	private AccommodationRepository accommodationRepository;
 
-	@Test
+	@ParameterizedTest
+	@MethodSource("filterConditionsProvider")
 	@DisplayName("필터링 조건에 따라 숙소를 조회할 수 있다.")
-	void success_findFilteredAccommodations() {
+	void success_findFilteredAccommodations(FilterCondition filterCondition, int expectedSize,
+		List<String> expectedNames) {
 		// given
 		List<Accommodation> accommodationList = TestAccommodationFactory.createTestAccommodationList();
-		accommodationList = accommodationRepository.saveAll(accommodationList);
+		accommodationRepository.saveAll(accommodationList);
 
-		FilterCondition filterCondition = FilterCondition.builder()
-			.longitude(37.4966645)
-			.latitude(127.0629804)
-			.minPrice(10000)
-			.maxPrice(100000)
-			.maxGuests(1)
-			.requestedDates(List.of(
-				LocalDate.of(2026, 1, 1),
-				LocalDate.of(2026, 1, 2),
-				LocalDate.of(2026, 1, 3)
-			))
-			.build();
 		// when
 		Page<Accommodation> accommodations = accommodationRepository.findFilteredAccommodations(PageRequest.of(0, 3),
 			filterCondition);
@@ -53,6 +47,58 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 		for (Accommodation accommodation : accommodations.getContent()) {
 			System.out.println(accommodation.getName());
 		}
-		assertThat(accommodations.getTotalElements()).isEqualTo(4);
+		assertThat(accommodations.getTotalElements()).isEqualTo(expectedSize);
+	}
+
+	static Stream<Arguments> filterConditionsProvider() {
+		return Stream.of(
+			// 위치 필터링
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.requestedDates(List.of())
+					.build(),
+				6,
+				List.of("서울 시내 모던룸1", "서울 시내 모던룸2", "서울 시내 모던룸3",
+					"서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
+			),
+			// 위치 + 가격 필터링
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.minPrice(50000)
+					.maxPrice(60000)
+					.requestedDates(List.of())
+					.build(),
+				1,
+				List.of("서울 시내 모던룸1")
+			),
+			// 위치 + 가격 + 게스트 수 필터링
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(127.0629804)
+					.latitude(37.4966645)
+					.maxGuests(4)
+					.requestedDates(List.of())
+					.build(),
+				3,
+				List.of("서울 시내 모던룸 4", "서울 시내 모던룸5", "서울 시내 모던룸6")
+			),
+			// 위치 + 가격 + 게스트 수 + 날짜 필터링
+			Arguments.of(
+				FilterCondition.builder()
+					.longitude(129.1201036)
+					.latitude(35.1610936)
+					.minPrice(55000)
+					.maxPrice(100000)
+					.maxGuests(2)
+					.requestedDates(List.of())
+					.build(),
+				1,
+				List.of("부산 광안리 룸")
+			)
+		);
 	}
 }
