@@ -59,6 +59,7 @@ public class AccommodationRepositoryImpl implements AccommodationRepositoryCusto
 					RADIUS_METERS
 				)
 			)
+			.orderBy(accommodation.pricePerDay.asc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();

@@ -33,7 +33,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 
 	@ParameterizedTest
 	@MethodSource("filterConditionsProvider")
-	@DisplayName("필터링 조건에 따라 숙소를 조회할 수 있다.")
+	@DisplayName("필터링 조건에 따라 가격으로 정렬된 숙소를 조회할 수 있다.")
 	void success_findFilteredAccommodations(FilterCondition filterCondition, Pageable pageable, int expectedSize,
 		List<String> expectedNames) {
 		// given
@@ -51,12 +51,12 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 			.toList();
 
 		assertThat(accommodations.getTotalElements()).isEqualTo(expectedSize);
-		assertThat(resultNames).containsExactlyInAnyOrderElementsOf(expectedNames);
+		assertThat(resultNames).containsExactlyElementsOf(expectedNames);
 	}
 
 	static Stream<Arguments> filterConditionsProvider() {
 		return Stream.of(
-			// 위치 필터링
+			// 위치 필터링 및 가격 정렬 체크
 			Arguments.of(
 				FilterCondition.builder()
 					.longitude(127.0629804)
@@ -65,7 +65,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.build(),
 				PageRequest.of(0, 3),
 				6,
-				List.of("서울 시내 모던룸1", "서울 시내 모던룸2", "서울 시내 모던룸3")
+				List.of("서울 시내 모던룸3", "서울 시내 모던룸6", "서울 시내 모던룸5")
 			),
 			Arguments.of(
 				FilterCondition.builder()
@@ -75,7 +75,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.build(),
 				PageRequest.of(1, 3),
 				6,
-				List.of("서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
+				List.of("서울 시내 모던룸1", "서울 시내 모던룸2", "서울 시내 모던룸4")
 			),
 			// 위치 + 가격 필터링
 			Arguments.of(
