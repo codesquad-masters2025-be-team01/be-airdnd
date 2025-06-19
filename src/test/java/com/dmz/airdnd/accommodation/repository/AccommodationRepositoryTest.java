@@ -23,8 +23,14 @@ import com.dmz.airdnd.accommodation.dto.FilterCondition;
 import com.dmz.airdnd.common.config.QuerydslConfig;
 import com.dmz.airdnd.fixture.TestAccommodationFactory;
 import com.dmz.airdnd.fixture.TestAvailabilityFactory;
+import com.dmz.airdnd.fixture.TestReservationFactory;
+import com.dmz.airdnd.fixture.TestUserFactory;
 import com.dmz.airdnd.reservation.domain.Availability;
+import com.dmz.airdnd.reservation.domain.Reservation;
 import com.dmz.airdnd.reservation.repository.AvailabilityRepository;
+import com.dmz.airdnd.reservation.repository.ReservationRepository;
+import com.dmz.airdnd.user.domain.User;
+import com.dmz.airdnd.user.repository.UserRepository;
 
 @DataJpaTest
 @Import(QuerydslConfig.class)
@@ -36,15 +42,28 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 	@Autowired
 	private AvailabilityRepository availabilityRepository;
 
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private ReservationRepository reservationRepository;
+
 	@ParameterizedTest
 	@MethodSource("filterConditionsProvider")
 	@DisplayName("필터링 조건에 따라 가격으로 정렬된 숙소를 조회할 수 있다.")
 	void success_findFilteredAccommodations(FilterCondition filterCondition, Pageable pageable, int expectedSize,
 		List<String> expectedNames) {
 		// given
+		User user = TestUserFactory.createTestUser();
+		userRepository.save(user);
+
 		List<Accommodation> accommodationList = TestAccommodationFactory.createTestAccommodationList();
 		accommodationRepository.saveAll(accommodationList);
-		List<Availability> availabilityList = TestAvailabilityFactory.createTestAvailabilities(accommodationList);
+
+		// todo: reservation 생성 로직 좀 더 자세히 작성하고, reservation리스트에 따라 availability를 생성하는 로직을 구현해서 fixture로 만들어야할 듯
+		Reservation reservation = reservationRepository.save(TestReservationFactory.createTestReservation(user, accommodationList.get(0)));
+
+		List<Availability> availabilityList = TestAvailabilityFactory.createTestAvailabilities(accommodationList, reservation);
 		availabilityRepository.saveAll(availabilityList);
 
 		// when
@@ -63,7 +82,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 
 	static Stream<Arguments> filterConditionsProvider() {
 		return Stream.of(
-			// 위치 필터링 및 가격 정렬 체크
+			// 위치 필터링 및 가격 정렬 + 페이징 체크 (가격 순서는 3 6 5 1 2 4)
 			Arguments.of(
 				FilterCondition.builder()
 					.longitude(127.0629804)
@@ -107,7 +126,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.build(),
 				PageRequest.of(0, 3),
 				3,
-				List.of("서울 시내 모던룸4", "서울 시내 모던룸5", "서울 시내 모던룸6")
+				List.of("서울 시내 모던룸6", "서울 시내 모던룸5", "서울 시내 모던룸4")
 			),
 			Arguments.of(
 				FilterCondition.builder()
@@ -122,7 +141,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 				1,
 				List.of("부산 광안리 룸")
 			),
-			// 위치 + 날짜 필터링
+			// 위치 + 날짜 필터링 + 페이징 체크
 			Arguments.of(
 				FilterCondition.builder()
 					.longitude(127.0629804)
@@ -130,7 +149,7 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.requestedDates(List.of(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 1, 2)))
 					.build(),
 				PageRequest.of(0, 3),
-				3,
+				4,
 				List.of("서울 시내 모던룸3", "서울 시내 모던룸6", "서울 시내 모던룸5")
 			),
 			Arguments.of(
@@ -139,9 +158,9 @@ class AccommodationRepositoryTest extends AbstractContainerBase {
 					.latitude(37.4966645)
 					.requestedDates(List.of(LocalDate.of(2026, 1, 3), LocalDate.of(2026, 1, 4)))
 					.build(),
-				PageRequest.of(0, 3),
-				3,
-				List.of("서울 시내 모던룸6", "서울 시내 모던룸2", "서울 시내 모던룸5")
+				PageRequest.of(0, 10),
+				4,
+				List.of("서울 시내 모던룸6", "서울 시내 모던룸5", "서울 시내 모던룸2", "서울 시내 모던룸4")
 			),
 			Arguments.of(
 				FilterCondition.builder()

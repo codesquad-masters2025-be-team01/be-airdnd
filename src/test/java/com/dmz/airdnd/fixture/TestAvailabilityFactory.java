@@ -24,7 +24,7 @@ public class TestAvailabilityFactory {
 		return availabilities;
 	}
 
-	public static List<Availability> createTestAvailabilities(List<Accommodation> accommodations) {
+	public static List<Availability> createTestAvailabilities(List<Accommodation> accommodations, Reservation reservation) {
 		// 0: 2026-01-01 ~ 2026-01-03
 		// 1: 2026-01-01 ~ 2026-01-02
 		// 2: 2026-01-04 ~ 2026-01-06
@@ -33,38 +33,47 @@ public class TestAvailabilityFactory {
 			Availability.builder()
 				.accommodation(accommodations.get(0))
 				.date(LocalDate.of(2026, 1, 1))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(0))
 				.date(LocalDate.of(2026, 1, 2))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(0))
 				.date(LocalDate.of(2026, 1, 3))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(1))
 				.date(LocalDate.of(2026, 1, 1))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(1))
 				.date(LocalDate.of(2026, 1, 2))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(2))
 				.date(LocalDate.of(2026, 1, 4))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(2))
 				.date(LocalDate.of(2026, 1, 5))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(2))
 				.date(LocalDate.of(2026, 1, 6))
+				.reservation(reservation)
 				.build(),
 			Availability.builder()
 				.accommodation(accommodations.get(3))
 				.date(LocalDate.of(2026, 1, 6))
+				.reservation(reservation)
 				.build()
 		);
 	}
