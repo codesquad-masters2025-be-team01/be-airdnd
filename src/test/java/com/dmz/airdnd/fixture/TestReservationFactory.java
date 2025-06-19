@@ -26,9 +26,8 @@ public class TestReservationFactory {
 			.build();
 	}
 
-	public static ReservationRequest createReservationRequest(Accommodation accommodation) {
+	public static ReservationRequest createReservationRequest() {
 		return ReservationRequest.builder()
-			.accommodationId(accommodation.getId())
 			.checkInDate(LocalDate.of(2025, 7, 21))
 			.checkOutDate(LocalDate.of(2025, 7, 23))
 			.numberOfGuests(4)

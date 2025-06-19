@@ -13,8 +13,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ReservationRequest {
 
-	private Long accommodationId;
-
 	@NotNull(message = "체크인은 필수 입력 항목입니다.")
 	private LocalDate checkInDate;
 
@@ -24,5 +22,6 @@ public class ReservationRequest {
 	@Min(value = 1, message = "투숙 인원은 1명 이상이어야 합니다.")
 	private int numberOfGuests;
 
+	@NotNull
 	private String timezone;
 }
