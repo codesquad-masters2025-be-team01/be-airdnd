@@ -3,6 +3,8 @@ package com.dmz.airdnd.accommodation.domain;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,7 +67,8 @@ public class Accommodation {
 	@Column(nullable = false)
 	private int bathroomCount;
 
-	@Column(nullable = false)
+	@CreationTimestamp
+	@Column(nullable = false, updatable = false)
 	private Timestamp createdAt;
 
 	private Timestamp updatedAt;

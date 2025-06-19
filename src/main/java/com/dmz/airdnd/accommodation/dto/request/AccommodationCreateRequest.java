@@ -49,6 +49,14 @@ public class AccommodationCreateRequest {
 	@PositiveOrZero(message = "욕실 수는 0 이상이어야 합니다.")
 	private Integer bathroomCount;
 
-	@NotNull(message = "주소 ID는 필수 입력 항목입니다.")
-	private Long addressId;
+	@NotBlank(message = "국가 이름은 필수 입력 항목입니다.")
+	@Size(max = 50, message = "국가 이름은 50자 이내여야 합니다.")
+	private String country;
+
+	@NotBlank(message = "기본 주소는 필수 입력 항목입니다.")
+	@Size(max = 255, message = "기본 주소는 255자 이내여야 합니다.")
+	private String baseAddress;
+
+	@Size(max = 255, message = "상세 주소는 255자 이내여야 합니다.")
+	private String detailedAddress;
 }
