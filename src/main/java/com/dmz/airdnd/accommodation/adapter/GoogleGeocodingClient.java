@@ -8,13 +8,17 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.dmz.airdnd.accommodation.dto.response.CoordinateResponse;
+import com.dmz.airdnd.accommodation.dto.response.CoordinatesDto;
 import com.dmz.airdnd.accommodation.dto.response.GeocodeResponse;
 import com.dmz.airdnd.common.exception.ErrorCode;
 import com.dmz.airdnd.common.exception.GeocodingException;
 
-import lombok.RequiredArgsConstructor;
+import java.nio.charset.StandardCharsets;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GoogleGeocodingClient implements GeocodingClient {
@@ -26,8 +30,8 @@ public class GoogleGeocodingClient implements GeocodingClient {
 	private String apiKey;
 
 	@Override
-	public CoordinateResponse lookupCoordinates(String baseAddress) {
-		String coordinateRequestUri = generateUri(baseAddress);
+	public CoordinatesDto lookupCoordinates(String baseAddress) {
+		URI coordinateRequestUri = generateUri(baseAddress);
 		GeocodeResponse geocodeResponse;
 
 		try {
@@ -36,21 +40,25 @@ public class GoogleGeocodingClient implements GeocodingClient {
 			throw new GeocodingException(ErrorCode.GEOCODING_FAILED);
 		}
 
-		if (geocodeResponse == null || !"OK".equals(geocodeResponse.getStatus()) || geocodeResponse.getResults()
+		if (geocodeResponse == null || !geocodeResponse.getStatus().equals("OK") || geocodeResponse.getResults()
 			.isEmpty()) {
+			log.warn("유효하지 않은 GeocodeResponse: {}", geocodeResponse);
 			throw new GeocodingException(ErrorCode.GEOCODING_FAILED);
 		}
 
 		GeocodeResponse.Location location = geocodeResponse.getResults().get(0).getGeometry().getLocation();
 
-		return new CoordinateResponse(location.getLatitude(), location.getLongitude());
+		return new CoordinatesDto(location.getLatitude(), location.getLongitude());
 	}
 
-	private String generateUri(String baseAddress) {
-		UriComponentsBuilder builder = UriComponentsBuilder
-			.fromUri(URI.create(GOOGLE_GEOCODING_URL))
+	private URI generateUri(String baseAddress) {
+		return UriComponentsBuilder
+			.fromHttpUrl(GOOGLE_GEOCODING_URL)
 			.queryParam("address", baseAddress)
-			.queryParam("key", apiKey);
-		return builder.toUriString();
+			.queryParam("key", apiKey)
+			.queryParam("language", "ko")
+			.encode(StandardCharsets.UTF_8)
+			.build()
+			.toUri();
 	}
 }
