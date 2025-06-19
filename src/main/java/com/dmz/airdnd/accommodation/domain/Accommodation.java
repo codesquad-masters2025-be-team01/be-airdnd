@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class Accommodation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

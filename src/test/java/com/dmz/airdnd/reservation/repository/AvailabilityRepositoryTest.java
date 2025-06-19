@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.dmz.airdnd.AbstractContainerBase;
@@ -21,6 +22,7 @@ import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.domain.Address;
 import com.dmz.airdnd.accommodation.repository.AccommodationRepository;
 import com.dmz.airdnd.accommodation.repository.AddressRepository;
+import com.dmz.airdnd.common.config.QuerydslConfig;
 import com.dmz.airdnd.fixture.TestAccommodationFactory;
 import com.dmz.airdnd.fixture.TestAddressFactory;
 import com.dmz.airdnd.fixture.TestAvailabilityFactory;
@@ -32,6 +34,7 @@ import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.repository.UserRepository;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class AvailabilityRepositoryTest extends AbstractContainerBase {
 
 	@Autowired
