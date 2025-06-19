@@ -23,4 +23,49 @@ public class TestAvailabilityFactory {
 		}
 		return availabilities;
 	}
+
+	public static List<Availability> createTestAvailabilities(List<Accommodation> accommodations) {
+		// 0: 2026-01-01 ~ 2026-01-03
+		// 1: 2026-01-01 ~ 2026-01-02
+		// 2: 2026-01-04 ~ 2026-01-06
+		// 3: 2026-01-06 예약됨.
+		return List.of(
+			Availability.builder()
+				.accommodation(accommodations.get(0))
+				.date(LocalDate.of(2026, 1, 1))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(0))
+				.date(LocalDate.of(2026, 1, 2))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(0))
+				.date(LocalDate.of(2026, 1, 3))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(1))
+				.date(LocalDate.of(2026, 1, 1))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(1))
+				.date(LocalDate.of(2026, 1, 2))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(2))
+				.date(LocalDate.of(2026, 1, 4))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(2))
+				.date(LocalDate.of(2026, 1, 5))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(2))
+				.date(LocalDate.of(2026, 1, 6))
+				.build(),
+			Availability.builder()
+				.accommodation(accommodations.get(3))
+				.date(LocalDate.of(2026, 1, 6))
+				.build()
+		);
+	}
 }
