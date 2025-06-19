@@ -36,7 +36,7 @@ class AccommodationServiceTest {
 	@DisplayName("필터링과 페이징이 포함된 요청을 받고 필터링과 페이징 된 결과를 반환한다.")
 	void testAccommodationService() {
 		// given
-		Accommodation accommodation = TestAccommodationFactory.createAccommodation1();
+		Accommodation accommodation = TestAccommodationFactory.createTestAccommodation1();
 
 		AccommodationSearchRequest request = AccommodationSearchRequest.builder()
 			.longitude(127.027778)

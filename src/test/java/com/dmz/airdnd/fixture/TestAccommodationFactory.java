@@ -8,38 +8,44 @@ import com.dmz.airdnd.accommodation.domain.Address;
 import com.dmz.airdnd.accommodation.util.GeometryFactory;
 
 public class TestAccommodationFactory {
+	public static Accommodation createTestAccommodation(Long id) {
+		return Accommodation.builder()
+			.id(id)
+			.address(Address.builder()
+				.country("KR")
+				.baseAddress("서울특별시 강남구")
+				.location(GeometryFactory.createPoint(37.4966645, 127.0629804))
+				.build())
+			.labels(List.of())
+			.name("서울 시내 모던룸1")
+			.description("조용하고 따뜻한 다락방")
+			.pricePerDay(55000)
+			.currency("KRW")
+			.maxGuests(2)
+			.bedCount(1)
+			.bedroomCount(1)
+			.bathroomCount(1)
+			.createdAt(now())
+			.build();
+	}
+
 	public static Accommodation createTestAccommodation(Address address) {
 		return Accommodation.builder()
 			.address(address)
-			.name("한라산뷰다락룸개인실")
-			.description("건물이 목조주택이라 방이 아늑한 느낌입니다.")
-			.pricePerDay(63900)
+			.labels(List.of())
+			.name("서울 시내 모던룸1")
+			.description("조용하고 따뜻한 다락방")
+			.pricePerDay(55000)
 			.currency("KRW")
-			.maxGuests(4)
-			.bedCount(3)
-			.bedroomCount(3)
-			.bathroomCount(2)
-			.createdAt(new Timestamp(System.currentTimeMillis()))
+			.maxGuests(2)
+			.bedCount(1)
+			.bedroomCount(1)
+			.bathroomCount(1)
+			.createdAt(now())
 			.build();
 	}
 
-	public static Accommodation createTestAccommodation(Long id, Address address) {
-		return Accommodation.builder()
-			.id(id)
-			.address(address)
-			.name("한라산뷰다락룸개인실")
-			.description("건물이 목조주택이라 방이 아늑한 느낌입니다.")
-			.pricePerDay(63900)
-			.currency("KRW")
-			.maxGuests(4)
-			.bedCount(3)
-			.bedroomCount(3)
-			.bathroomCount(2)
-			.createdAt(new Timestamp(System.currentTimeMillis()))
-			.build();
-	}
-
-	public static Accommodation createAccommodation1() { // TODO : 숙소에 라벨 추가하기, 라벨 enum으로 관리
+	public static Accommodation createTestAccommodation1() { // TODO : 숙소에 라벨 추가하기, 라벨 enum으로 관리
 		return Accommodation.builder()
 			.address(Address.builder()
 				.country("KR")
