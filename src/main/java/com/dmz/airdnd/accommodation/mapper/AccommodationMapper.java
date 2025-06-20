@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.domain.Address;
+import com.dmz.airdnd.accommodation.domain.Label;
 import com.dmz.airdnd.accommodation.dto.request.AccommodationCreateRequest;
 import com.dmz.airdnd.accommodation.domain.Label;
 import com.dmz.airdnd.accommodation.dto.response.AccommodationResponse;
@@ -12,7 +13,7 @@ import com.dmz.airdnd.accommodation.dto.response.LabelResponse;
 import com.dmz.airdnd.accommodation.dto.response.AccommodationCreateResponse;
 
 public class AccommodationMapper {
-	public static Accommodation toEntity(AccommodationCreateRequest request, Address address) {
+	public static Accommodation toEntity(AccommodationCreateRequest request, Address address, List<Label> labels) {
 		return Accommodation.builder()
 			.name(request.getName())
 			.description(request.getDescription())
@@ -23,6 +24,7 @@ public class AccommodationMapper {
 			.bedroomCount(request.getBedroomCount())
 			.bathroomCount(request.getBathroomCount())
 			.address(address)
+			.labels(labels)
 			.build();
 	}
 
@@ -61,6 +63,7 @@ public class AccommodationMapper {
 		return AccommodationCreateResponse.builder()
 			.id(accommodation.getId())
 			.address(formatFullAddress(accommodation.getAddress()))
+			.labels(accommodation.getLabels())
 			.name(accommodation.getName())
 			.description(accommodation.getDescription())
 			.pricePerDay(accommodation.getPricePerDay())

@@ -39,7 +39,9 @@ public class Accommodation {
 	@JoinTable(
 		name = "accommodation_label",
 		joinColumns = @JoinColumn(name = "accommodation_id"),
-		inverseJoinColumns = @JoinColumn(name = "label_id")
+		inverseJoinColumns = @JoinColumn(
+			name = "label_id",
+			columnDefinition = "VARCHAR(50) NOT NULL")
 	)
 	private List<Label> labels;
 
