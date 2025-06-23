@@ -9,7 +9,7 @@ import com.dmz.airdnd.accommodation.adapter.GeocodingClient;
 import com.dmz.airdnd.accommodation.domain.Address;
 import com.dmz.airdnd.accommodation.dto.response.CoordinatesDto;
 import com.dmz.airdnd.accommodation.repository.AddressRepository;
-import com.dmz.airdnd.accommodation.util.GeometryFactory;
+import com.dmz.airdnd.accommodation.util.GeoPointFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +42,6 @@ public class AddressService {
 		CoordinatesDto coordinates = geocodingClient.lookupCoordinates(baseAddress);
 		double latitude = coordinates.latitude();
 		double longitude = coordinates.longitude();
-		return GeometryFactory.createPoint(longitude, latitude);
+		return GeoPointFactory.createPoint(longitude, latitude);
 	}
 }
