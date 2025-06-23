@@ -17,6 +17,7 @@ import com.dmz.airdnd.accommodation.dto.response.AccommodationPageResponse;
 import com.dmz.airdnd.accommodation.mapper.AccommodationMapper;
 import com.dmz.airdnd.accommodation.domain.Label;
 import com.dmz.airdnd.accommodation.repository.AccommodationRepository;
+import com.dmz.airdnd.common.exception.AccommodationNotFound;
 import com.dmz.airdnd.common.exception.ErrorCode;
 import com.dmz.airdnd.common.exception.InvalidFilterConditionException;
 import com.dmz.airdnd.accommodation.repository.LabelRepository;

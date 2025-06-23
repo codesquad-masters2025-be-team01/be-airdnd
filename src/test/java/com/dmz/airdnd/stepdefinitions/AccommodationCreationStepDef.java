@@ -7,8 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,19 +23,8 @@ import com.dmz.airdnd.accommodation.service.AccommodationService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
 
-// Scenario: 모든 필수 정보가 올바르면 숙소 생성에 성공한다
-// 	Given 유효한 숙소 등록 정보가 준비되어 있다.
-// 	And 저장소에 동일한 name 을 가진 숙소가 존재하지 않는다.
-// 	When 호스트가 POST "/api/accommodations" 요청을 보내면
-// 	Then 응답 상태로 201 Created를 받는다.
-// 	And 응답 바디에 생성된 숙소의 id, 생성일시(createdAt)가 포함되어야 한다
-
-@SpringBootTest
-@AutoConfigureMockMvc
-@CucumberContextConfiguration
-public class CreationStepDef extends AbstractContainerBase {
+public class AccommodationCreationStepDef extends AbstractContainerBase {
 
 	@Autowired
 	MockMvc mockMvc;
@@ -118,5 +105,47 @@ public class CreationStepDef extends AbstractContainerBase {
 			.andExpect(jsonPath("$.data.bathroomCount").value(request.getBathroomCount()))
 			.andExpect(jsonPath("$.data.createdAt").exists())
 			.andExpect(jsonPath("$.error").value(nullValue()));
+	}
+
+	@Given("{string} 값이 {string} 인 숙소 정보가 주어진다.")
+	public void 필수_필드가_빠진_숙소_정보가_주어진다(String field, String value) {
+		if (value.equals("<blank>"))
+			value = "";
+		AccommodationCreateRequest.AccommodationCreateRequestBuilder builder = AccommodationCreateRequest.builder()
+			.name("accommodation123")
+			.description(null)
+			.pricePerDay(50000L)
+			.currency("KRW")
+			.maxGuests(2)
+			.bedCount(1)
+			.bedroomCount(1)
+			.bathroomCount(1)
+			.country("대한민국")
+			.baseAddress("서울특별시 강남구 강남대로62길 23")
+			.detailedAddress("4층")
+			.labelIds(List.of("WIFI", "KITCHEN", "PARKING"));
+
+		request = switch (field) {
+			case "name" -> builder.name(value).build();
+			case "pricePerDay" -> builder.pricePerDay(null).build();
+			case "currency" -> builder.currency(value).build();
+			case "maxGuests" -> builder.maxGuests(null).build();
+			case "bedCount" -> builder.bedCount(null).build();
+			case "bedroomCount" -> builder.bedroomCount(null).build();
+			case "bathroomCount" -> builder.bathroomCount(null).build();
+			case "country" -> builder.country(value).build();
+			case "baseAddress" -> builder.baseAddress(value).build();
+			default -> builder.build();
+		};
+	}
+
+	@Then("응답 상태 코드는 400 Bad Request여야 한다.")
+	public void 응답_상태_코드는_400() throws Exception {
+		resultActions.andExpect(status().isBadRequest());
+	}
+
+	@Then("오류 메시지에 {string}가 포함되어야 한다")
+	public void 오류_메시지_검증(String message) throws Exception {
+		resultActions.andExpect(jsonPath("$.error.message").value(containsString(message)));
 	}
 }
