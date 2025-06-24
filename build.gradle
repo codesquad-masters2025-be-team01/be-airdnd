@@ -60,7 +60,6 @@ dependencies {
     implementation 'org.locationtech.jts:jts-core'
 
     implementation 'org.redisson:redisson-spring-boot-starter:3.27.2'
-    testImplementation 'org.testcontainers:redis:1.19.1'
 }
 
 tasks.named('test') {
