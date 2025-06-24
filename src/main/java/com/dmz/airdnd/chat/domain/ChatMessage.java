@@ -2,6 +2,8 @@ package com.dmz.airdnd.chat.domain;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.dmz.airdnd.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -38,5 +40,7 @@ public class ChatMessage {
 	@Column(length = 1000)
 	private String content;
 
+	@CreationTimestamp
+	@Column(updatable = false)
 	private LocalDateTime sentAt;
 }
