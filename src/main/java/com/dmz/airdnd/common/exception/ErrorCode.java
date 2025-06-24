@@ -30,6 +30,7 @@ public enum ErrorCode {
 	FORBIDDEN(403, "FORBIDDEN", "해당 작업을 수행할 권한이 없습니다."),
 	// 예약 관련
 	DUPLICATE_RESERVATION(409, "DUPLICATE_RESERVATION", "이미 존재하는 예약입니다."),
+	RESERVATION_IN_PROGRESS(409, "RESERVATION_IN_PROGRESS", "다른 사용자가 예약 중입니다."),
 	// Google API 관련
 	GEOCODING_FAILED(502, "GEOCODING_FAILED", "주소 정보를 가져오는 데 실패했습니다."),
 	// 필터링 요청 관련
