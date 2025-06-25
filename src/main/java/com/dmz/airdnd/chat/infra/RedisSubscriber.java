@@ -27,7 +27,7 @@ public class RedisSubscriber implements MessageListener {
 			String payload = new String(message.getBody(), StandardCharsets.UTF_8);
 			ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
 
-			messagingTemplate.convertAndSend("/topic/chatroom/" + chatMessage.getChatRoom(), chatMessage);
+			messagingTemplate.convertAndSend("/topic/chatroom/" + chatMessage.getChatRoom().getId(), chatMessage);
 		} catch (Exception e) {
 			log.error("RedisSubscriber 메시지 처리 중 오류", e);
 		}
