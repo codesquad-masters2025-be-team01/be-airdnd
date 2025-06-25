@@ -1,6 +1,9 @@
 package com.dmz.airdnd.chat;
 
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import com.dmz.airdnd.chat.domain.ChatMessage;
@@ -10,7 +13,6 @@ import com.dmz.airdnd.chat.dto.ChatMessageResponse;
 import com.dmz.airdnd.chat.infra.RedisPublisher;
 import com.dmz.airdnd.chat.repository.ChatMessageRepository;
 import com.dmz.airdnd.chat.repository.ChatRoomRepository;
-import com.dmz.airdnd.common.auth.UserContext;
 import com.dmz.airdnd.user.domain.User;
 import com.dmz.airdnd.user.repository.UserRepository;
 
@@ -27,8 +29,12 @@ public class ChatController {
 	private final RedisPublisher redisPublisher;
 
 	@MessageMapping("/chat.send")
-	public void sendMessage(@Valid ChatMessageRequest request) {
-		User user = userRepository.findById(UserContext.get().getId()).orElseThrow(
+	public void sendMessage(@Valid ChatMessageRequest request, MessageHeaders headers) {
+		SimpMessageHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(headers,
+			SimpMessageHeaderAccessor.class);
+		Long userId = (Long)accessor.getSessionAttributes().get("userId");
+
+		User user = userRepository.findById(userId).orElseThrow(
 			() -> new IllegalArgumentException("User not found"));
 
 		ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId())
