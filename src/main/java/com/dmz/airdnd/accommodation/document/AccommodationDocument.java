@@ -59,5 +59,14 @@ public class AccommodationDocument {
 	private Point location;
 
 	@Field(type = FieldType.Keyword)
+	private String country;
+
+	@Field(type = FieldType.Text)
+	private String baseAddress;
+
+	@Field(type = FieldType.Text)
+	private String detailedAddress;
+
+	@Field(type = FieldType.Keyword)
 	private List<String> labels;
 }
