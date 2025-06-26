@@ -10,6 +10,7 @@ import com.dmz.airdnd.accommodation.document.AccommodationDocument;
 import com.dmz.airdnd.accommodation.domain.Accommodation;
 import com.dmz.airdnd.accommodation.domain.Address;
 import com.dmz.airdnd.accommodation.domain.Label;
+import com.dmz.airdnd.accommodation.domain.LabelType;
 import com.dmz.airdnd.accommodation.dto.request.AccommodationCreateRequest;
 import com.dmz.airdnd.accommodation.dto.response.AccommodationResponse;
 import com.dmz.airdnd.accommodation.dto.response.AddressResponse;
@@ -133,7 +134,7 @@ public class AccommodationMapper {
 			.addressResponse(addressResponse)
 			.labelResponses(
 				document.getLabels().stream()
-					.map(labelName -> new LabelResponse(null, labelName))
+					.map(labelName -> new LabelResponse(LabelType.fromDisplayName(labelName), labelName))
 					.collect(Collectors.toList())
 			)
 			.name(document.getName())

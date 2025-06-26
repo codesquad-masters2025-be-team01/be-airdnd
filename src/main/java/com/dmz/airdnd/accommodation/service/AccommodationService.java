@@ -146,7 +146,7 @@ public class AccommodationService {
 	public AccommodationPageResponse findFilterAccommodationByElastic(AccommodationSearchRequest request) {
 		Pageable pageable = PageRequest.of(request.getPage() - 1, request.getPageSize());
 
-		Point center = new Point(request.getLatitude(), request.getLongitude());
+		Point center = new Point(request.getLongitude(), request.getLatitude());
 		Distance radius = new Distance(5, Metrics.KILOMETERS);
 
 		Page<AccommodationDocument> documents = accommodationSearchRepository.findByLocationNear(center, radius,
