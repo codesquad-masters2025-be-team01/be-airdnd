@@ -20,61 +20,58 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @Document(indexName = "accommodations")
 public class AccommodationDocument {
 
 	@Id
-	private final String id;
+	private String id;
 
 	@Field(type = FieldType.Text)
-	private final String name;
+	private String name;
 
 	@Field(type = FieldType.Text)
-	private final String description;
+	private String description;
 
 	@Field(type = FieldType.Long)
-	private final Long pricePerDay;
+	private Long pricePerDay;
 
 	@Field(type = FieldType.Keyword)
-	private final String currency;
+	private String currency;
 
 	@Field(type = FieldType.Integer)
-	private final Integer maxGuests;
+	private Integer maxGuests;
 
 	@Field(type = FieldType.Integer)
-	private final Integer bedCount;
+	private Integer bedCount;
 
 	@Field(type = FieldType.Integer)
-	private final Integer bedroomCount;
+	private Integer bedroomCount;
 
 	@Field(type = FieldType.Integer)
-	private final Integer bathroomCount;
+	private Integer bathroomCount;
 
 	@Field(type = FieldType.Date)
-	private final Instant createdAt;
+	private Instant createdAt;
 
 	@Field(type = FieldType.Date)
-	private final Instant updatedAt;
+	private Instant updatedAt;
 
 	@GeoPointField
-	private final Point location;
+	private Point location;
 
 	@Field(type = FieldType.Keyword)
-	private final String country;
+	private String country;
 
 	@Field(type = FieldType.Text)
-	private final String baseAddress;
+	private String baseAddress;
 
 	@Field(type = FieldType.Text)
-	private final String detailedAddress;
+	private String detailedAddress;
 
 	@Field(type = FieldType.Keyword)
-	private final List<String> labels;
+	private List<String> labels;
 
 	@Field(type = FieldType.Date, format = DateFormat.date)
-	private final List<LocalDate> availableDates;
-
-	@Field(type = FieldType.Nested)
-	private final List<ReservationInfo> reservations;
+	private List<LocalDate> availableDates;
 }

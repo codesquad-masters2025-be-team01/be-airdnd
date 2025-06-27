@@ -1,6 +1,7 @@
 package com.dmz.airdnd.accommodation.mapper;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,6 +98,12 @@ public class AccommodationMapper {
 		CoordinatesDto coordinates) {
 		org.springframework.data.geo.Point location = new org.springframework.data.geo.Point(coordinates.longitude(),
 			coordinates.latitude());
+		// 6개월
+		LocalDate startDate = LocalDate.now();
+		LocalDate endDate = startDate.plusMonths(6);
+		List<LocalDate> availableDates = startDate
+			.datesUntil(endDate)
+			.toList();
 
 		return AccommodationDocument.builder()
 			.id(String.valueOf(accommodation.getId()))
@@ -115,8 +122,9 @@ public class AccommodationMapper {
 			.baseAddress(address.getBaseAddress())
 			.detailedAddress(address.getDetailedAddress())
 			.labels(accommodation.getLabels().stream()
-				.map(label -> label.getName())
+				.map(Label::getName)
 				.collect(Collectors.toList()))
+			.availableDates(availableDates)
 			.build();
 	}
 

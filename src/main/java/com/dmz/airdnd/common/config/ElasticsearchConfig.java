@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories
+@EnableElasticsearchRepositories(basePackages = "com.dmz.airdnd.accommodation.repository.elasticsearch")
 public class ElasticsearchConfig {
 
 	@Value("${spring.elasticsearch.uris}")
