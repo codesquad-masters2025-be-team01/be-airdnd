@@ -2,17 +2,14 @@ package com.dmz.airdnd.reservation.event;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.dmz.airdnd.accommodation.document.AccommodationDocument;
-import com.dmz.airdnd.accommodation.document.ReservationInfo;
 import com.dmz.airdnd.reservation.domain.Reservation;
 import com.dmz.airdnd.reservation.repository.ReservationRepository;
 
@@ -37,7 +34,7 @@ public class ReservationIndexingListener {
 
 		List<LocalDate> reservedDates = reservationRepository
 			.findByAccommodationId(reservation.getAccommodation().getId()).stream()
-			.flatMap(r -> r.getCheckInDate().datesUntil(r.getCheckOutDate().plusDays(1)))
+			.flatMap(r -> r.getCheckInDate().datesUntil(r.getCheckOutDate()))
 			.toList();
 
 		List<LocalDate> availableDates = fullWindow.stream()
